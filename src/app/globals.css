@@ -31,3 +31,16 @@ body {
     text-wrap: balance;
   }
 }
+
+.x-scrollbar::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.x-scrollbar::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.x-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #404040;
+  border-radius: 6px;
+}
