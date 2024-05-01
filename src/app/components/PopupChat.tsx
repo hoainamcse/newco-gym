@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
 import { ChangeEvent, KeyboardEvent, useRef, useState } from "react";
-import AutoSizeTextarea from "./Textarea";
+import AutoSizeTextarea from "./AutoSizeTextarea";
 
 const HUMAN = "HUMAN";
 const AI = "AI";
