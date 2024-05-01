@@ -10,30 +10,22 @@ const AutoSizeTextarea = (props: AutoSizeTextarea) => {
   const { ...rest } = props;
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [height, setHeight] = useState<number | string>("auto");
-  const [initHeight, setInitHeight] = useState<number | null>(null);
-  const [val, setVal] = useState<any>("");
+  const [isFocus, setIsFocus] = useState<boolean>(false);
 
   useEffect(() => {
-    setVal(rest.value)
-  }, [rest.value]);
-
-  useEffect(()=>{
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      const borderHeight = textareaRef.current.offsetHeight - textareaRef.current.clientHeight;
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight + borderHeight}px`;
+      const borderHeight =
+        textareaRef.current.offsetHeight - textareaRef.current.clientHeight;
+      if (rest.value) {
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight + borderHeight}px`;
+      } else {
+        textareaRef.current.style.height = "auto";
+      }
     }
-  }, [rest.value])
+  }, [rest.value, isFocus]);
 
-  return (
-    <textarea
-      ref={textareaRef}
-      style={{ height }}
-      rows={1}
-      {...rest}
-    />
-  );
+  return <textarea ref={textareaRef} rows={1} {...rest} />;
 };
 
 export default AutoSizeTextarea;
