@@ -1,39 +1,76 @@
-import React from "react";
+"use client";
+import React, { MouseEvent, useEffect, useState } from "react";
 import Link from "next/link";
-import NavLink from "./NavLink";
+import Image from "next/image";
 
-const navLinks = [
-  {
-    title: "About",
-    path: "#about",
-  },
-  {
-    title: "Projects",
-    path: "#projects",
-  },
-  {
-    title: "Contact",
-    path: "#contact",
-  },
-];
-const Navbar = (props: {}) => {
+interface NavLink {
+  id: string;
+  title: string;
+}
+
+interface NavbarProps {
+  navLinks: NavLink[];
+}
+
+const Navbar = (props: NavbarProps) => {
+  const { navLinks } = props;
+  const [activeSection, setActiveSection] = useState<string>("home");
+
+  const handleScroll = (e: MouseEvent<HTMLButtonElement>, id: string) => {
+    e.preventDefault();
+
+    setActiveSection(id);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <nav className="fixed mx-auto border border-zinc-700 top-0 left-0 right-0 z-10 bg-neutral-900 bg-opacity-100">
-      <div className="flex container lg:py-4 flex-wrap items-center justify-between mx-auto px-4 py-2">
-        <Link
-          href={"/"}
-          className="text-2xl md:text-5xl text-white font-semibold"
-        >
-          Beast
-        </Link>
-        <div className="menu hidden md:block md:w-auto" id="navbar">
-          <ul className="flex p-4 md:p-0 md:flex-row md:space-x-8 mt-0">
-            {navLinks.map((link, index) => (
-              <li key={index}>
-                <NavLink href={link.path} title={link.title} />
-              </li>
+    <nav className="flex items-center right-14 left-14 fixed top-7 z-50">
+      <div className="flex justify-between items center h-full w-full">
+        <div className="space-x-4 flex items-center">
+          <button
+            className="flex items-center focus:outline-none"
+            onClick={(e) => handleScroll(e, "home")}
+          >
+            <Image
+              alt="logo"
+              src={"https://placeholder.com/32x32"}
+              width={32}
+              height={32}
+              className="rounded-full"
+            />
+            <h1 className="font-medium text-2xl ml-2.5">GymSync</h1>
+          </button>
+        </div>
+        <div className="space-x-12 hidden md:flex md:justify-around md:items-center">
+          {navLinks &&
+            navLinks.map((nl) => (
+              <div
+                key={nl.id}
+                // className="text-xl hover:text-gray-300"
+
+                className={`text-xl p-2 text-white ${
+                  activeSection === nl.id ? "border-b-2" : "hover:text-gray-300"
+                }`}
+              >
+                <button
+                  className="focus:outline-none px-2"
+                  onClick={(e) => handleScroll(e, nl.id)}
+                >
+                  {nl.title}
+                </button>
+              </div>
             ))}
-          </ul>
+        </div>
+        <div className="space-x-4">
+          <Link
+            href="/signin"
+            className="border-2 bg-white text-black py-2 px-4 rounded-full hover:bg-gray-300"
+          >
+            Sign In
+          </Link>
         </div>
       </div>
     </nav>
