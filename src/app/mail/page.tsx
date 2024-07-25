@@ -1,25 +1,43 @@
-'use client';
+import { cookies } from "next/headers";
+import Image from "next/image";
 
-import React, { useState } from 'react';
-import ControlPanel from './_components/ControlPanel';
-import EmailList from './_components/EmailList';
-import EmailView from './_components/EmailView';
-import { Email } from '@/app/types';
+import { Mail } from "@/app/mail/_components/mail";
+import { accounts, mails } from "@/app/mail/data";
 
-function App() {
-  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
+export default function MailPage() {
+  const layout = cookies().get("react-resizable-panels:layout:mail");
+  const collapsed = cookies().get("react-resizable-panels:collapsed");
+
+  const defaultLayout = layout ? JSON.parse(layout.value) : undefined;
+  const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 flex">
-      <div className="w-1/3 p-4">
-        <ControlPanel />
-        <EmailList setSelectedEmail={setSelectedEmail} />
+    <>
+      <div className="md:hidden">
+        <Image
+          src="/examples/mail-dark.png"
+          width={1280}
+          height={727}
+          alt="Mail"
+          className="hidden dark:block"
+        />
+        <Image
+          src="/examples/mail-light.png"
+          width={1280}
+          height={727}
+          alt="Mail"
+          className="block dark:hidden"
+        />
       </div>
-      <div className="w-2/3 p-4">
-        <EmailView email={selectedEmail} />
+      <div className="hidden flex-col md:flex">
+        <Mail
+          accounts={accounts}
+          mails={mails}
+          defaultLayout={defaultLayout}
+          defaultCollapsed={defaultCollapsed}
+          navCollapsedSize={4}
+        />
       </div>
-    </div>
+    </>
   );
 }
-
-export default App;
