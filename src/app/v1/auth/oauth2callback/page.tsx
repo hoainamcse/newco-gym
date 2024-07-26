@@ -2,7 +2,7 @@
 
 import Auth from "@/apis/auth";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 export default function OAuthCallback() {
   const searchParams = useSearchParams();
@@ -23,5 +23,5 @@ export default function OAuthCallback() {
     run();
   }, [searchParams]);
 
-  return <div>Loading...</div>;
+  return <Suspense><div>Loading...</div></Suspense>;
 }
