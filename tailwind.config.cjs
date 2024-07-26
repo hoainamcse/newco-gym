@@ -1,12 +1,6 @@
-import type { Config } from "tailwindcss";
-import * as colors from "tailwindcss/colors";
-
-const config: Config = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     extend: {
       backgroundImage: {
@@ -19,7 +13,7 @@ const config: Config = {
     },
   },
   plugins: [
-    function ({ addUtilities }: any) {
+    ({ addUtilities }) => {
       addUtilities({
         ".no-scrollbar::-webkit-scrollbar": {
           display: "none",
@@ -56,4 +50,3 @@ const config: Config = {
     },
   ],
 };
-export default config;
