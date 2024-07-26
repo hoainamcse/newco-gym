@@ -23,5 +23,5 @@ export default function OAuthCallback() {
     run();
   }, [searchParams]);
 
-  return <Suspense><div>Loading...</div></Suspense>;
+  return <div>Loading...</div>;
 }
