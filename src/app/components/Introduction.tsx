@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Introduction = () => {
   return (
     <div className="flex flex-col items-center text-center">
@@ -12,9 +14,11 @@ const Introduction = () => {
         <button className="bg-white text-black py-2 px-6 rounded-full hover:bg-gray-300">
           Get Started
         </button>
-        <button className="bg-transparent border border-white text-white py-2 px-6 rounded-full hover:bg-gray-700">
-          View Demo
-        </button>
+        <Link href="/mail">
+          <button className="bg-transparent border border-white text-white py-2 px-6 rounded-full hover:bg-gray-700">
+            View Demo
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -3,7 +3,8 @@ import axios, { AxiosRequestConfig, ResponseType } from "axios";
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 const axiosInstance = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
+  // baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}`,
   timeout: 60000,
   headers: { "Content-Type": "application/json" },
 });
@@ -60,7 +61,7 @@ const HTTPService = {
     if (method.match(/GET|HEAD|DELETE/)) {
       request.params = body || {};
     } else {
-      request.params = body || {};
+      request.data = body || {};
     }
     const token = localStorage.getItem("access_token");
     request.headers = { Authorization: `Bearer ${token}` };
