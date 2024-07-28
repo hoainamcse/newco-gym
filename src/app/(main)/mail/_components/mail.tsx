@@ -25,12 +25,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AccountSwitcher } from "@/app/mail/_components/account-switcher";
-import { MailDisplay } from "@/app/mail/_components/mail-display";
-import { MailList } from "@/app/mail/_components/mail-list";
-import { Nav } from "@/app/mail/_components/nav";
-import { type Mail } from "@/app/mail/data";
-import { useMail } from "@/app/mail/user-mail";
+import { AccountSwitcher } from "@/app/(main)/mail/_components/account-switcher";
+import { MailDisplay } from "@/app/(main)/mail/_components/mail-display";
+import { MailList } from "@/app/(main)/mail/_components/mail-list";
+import { Nav } from "@/app/(main)/mail/_components/nav";
+import { type Mail } from "@/app/(main)/mail/data";
+import { useMail } from "@/app/(main)/mail/user-mail";
 
 interface MailProps {
   accounts: {
@@ -64,7 +64,7 @@ export function Mail({
           )}`;
         }}
         // className="h-full max-h-[800px] items-stretch"
-        className="h-full items-stretch"
+        className="max-h-screen items-stretch"
       >
         <ResizablePanel
           defaultSize={defaultLayout[0]}
