@@ -1,79 +1,63 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { Link2, SquareMousePointer } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
 function Settings() {
   return (
     <div className="p-4 md:p-8">
-      <div className="mx-auto grid w-full max-w-6xl gap-2">
-        <h1 className="text-3xl font-semibold">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account settings and set e-mail preferences.
-        </p>
-        <Separator className="my-6" />
+      <div className="mx-auto grid w-full max-w-6xl gap-4 text-center">
+        <h1 className="text-4xl font-semibold">Settings</h1>
+        <p className="text-muted-foreground">Authorize your accounts for content posting</p>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-        <nav className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0">
-          <Link href="#" className="font-semibold text-primary">
-            General
-          </Link>
-          <Link href="#">Security</Link>
-          <Link href="#">Integrations</Link>
-          <Link href="#">Support</Link>
-          <Link href="#">Organizations</Link>
-          <Link href="#">Advanced</Link>
-        </nav>
-        <div className="grid gap-6">
-          <Card x-chunk="dashboard-04-chunk-1">
-            <CardHeader>
-              <CardTitle>Store Name</CardTitle>
-              <CardDescription>Used to identify your store in the marketplace.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form>
-                <Input placeholder="Store Name" />
-              </form>
-            </CardContent>
-            <CardFooter className="border-t px-6 py-4">
-              <Button>Save</Button>
-            </CardFooter>
-          </Card>
-          <Card x-chunk="dashboard-04-chunk-2">
-            <CardHeader>
-              <CardTitle>Plugins Directory</CardTitle>
-              <CardDescription>
-                The directory within your project, in which your plugins are located.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form className="flex flex-col gap-4">
-                <Input placeholder="Project Name" defaultValue="/content/plugins" />
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="include" defaultChecked />
-                  <label
-                    htmlFor="include"
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                  >
-                    Allow administrators to change the directory.
-                  </label>
-                </div>
-              </form>
-            </CardContent>
-            <CardFooter className="border-t px-6 py-4">
-              <Button>Save</Button>
-            </CardFooter>
-          </Card>
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-4 mt-16">
+        <div className="w-fit place-self-center">
+          <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6">
+            <Image
+              width="80"
+              height="80"
+              src="https://img.icons8.com/?size=100&id=118467&format=png&color=000000"
+              alt="facebook-new"
+            />
+            <Button className="rounded-none">Authorize</Button>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <Button className="rounded-none" variant="outline">
+              <Link2 className="h-4 w-4 mr-2" />
+              Disconnect
+            </Button>
+            <Button className="rounded-none">
+              <SquareMousePointer className="h-4 w-4 mr-2" />
+              Choose the another account
+            </Button>
+          </div>
+        </div>
+        <div className="w-fit place-self-center">
+          <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6">
+            <Image
+              width="80"
+              height="80"
+              src="https://img.icons8.com/?size=100&id=16733&format=png&color=000000"
+              alt="whatsapp--v1"
+            />
+            <div className="flex items-stretch gap-2">
+              <Input placeholder="Phone number" className="bg-white rounded-none" />
+              <Button className="rounded-none">Authorize</Button>
+            </div>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <Button className="rounded-none" variant="outline">
+              <Link2 className="h-4 w-4 mr-2" />
+              Disconnect
+            </Button>
+            <Button className="rounded-none">
+              <SquareMousePointer className="h-4 w-4 mr-2" />
+              Choose the another account
+            </Button>
+          </div>
         </div>
       </div>
     </div>
