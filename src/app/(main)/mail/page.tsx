@@ -12,14 +12,12 @@ export default function MailPage() {
   const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : undefined;
 
   return (
-    <div className="flex flex-col">
-      <Mail
-        accounts={accounts}
-        mails={mails}
-        defaultLayout={defaultLayout}
-        defaultCollapsed={defaultCollapsed}
-        navCollapsedSize={4}
-      />
-    </div>
+    <Mail
+      accounts={accounts}
+      mails={mails}
+      defaultLayout={defaultLayout}
+      defaultCollapsed={defaultCollapsed}
+      navCollapsedSize={4}
+    />
   );
 }

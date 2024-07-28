@@ -2,13 +2,13 @@ import React from 'react';
 
 import Nav from './_components/nav';
 
-function Dashboard({ children }: React.PropsWithChildren) {
+function MainLayout({ children }: React.PropsWithChildren) {
   return (
-    <div className="flex min-h-screen w-full flex-col">
+    <div className="h-screen flex flex-col">
       <Nav />
-      <main className="flex flex-1 flex-col gap-4 md:gap-8">{children}</main>
+      <main className="flex-1 overflow-auto flex flex-col gap-4 md:gap-8">{children}</main>
     </div>
   );
 }
 
-export default Dashboard;
+export default MainLayout;

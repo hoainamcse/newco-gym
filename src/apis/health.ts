@@ -1,7 +1,7 @@
-import HTTPService from "../services/HTTPService";
+import HTTPService from '../services/HTTPService';
 
 const Heath = {
-  check: () => HTTPService.sendRequest("GET", "/ping"),
+  check: () => HTTPService.sendRequest('GET', '/ping'),
 };
 
 export default Heath;

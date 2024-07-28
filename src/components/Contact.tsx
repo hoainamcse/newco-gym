@@ -4,17 +4,13 @@ const Contact = () => {
       <div className="text-center mt-12">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
         <p className="text-lg md:text-xl text-gray-600 mb-8">
-          We&apos;d love to hear from you! Please fill out the form below to get in
-          touch with us.
+          We&apos;d love to hear from you! Please fill out the form below to get in touch with us.
         </p>
       </div>
       <div className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
         <form action="#" method="POST">
           <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-gray-700 font-semibold mb-2"
-            >
+            <label htmlFor="name" className="block text-gray-700 font-semibold mb-2">
               Name
             </label>
             <input
@@ -26,10 +22,7 @@ const Contact = () => {
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-700 font-semibold mb-2"
-            >
+            <label htmlFor="email" className="block text-gray-700 font-semibold mb-2">
               Email
             </label>
             <input
@@ -41,10 +34,7 @@ const Contact = () => {
             />
           </div>
           <div className="mb-4">
-            <label
-              htmlFor="message"
-              className="block text-gray-700 font-semibold mb-2"
-            >
+            <label htmlFor="message" className="block text-gray-700 font-semibold mb-2">
               Message
             </label>
             <textarea

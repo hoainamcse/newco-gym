@@ -1,5 +1,5 @@
-import User from "@/apis/user";
-import { createContext, useEffect, useState } from "react";
+import User from '@/apis/user';
+import { createContext, useEffect, useState } from 'react';
 
 interface IAppContext {
   user: any;

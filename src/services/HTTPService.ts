@@ -1,12 +1,12 @@
-import axios, { AxiosRequestConfig, ResponseType } from "axios";
+import axios, { AxiosRequestConfig, ResponseType } from 'axios';
 
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 const axiosInstance = axios.create({
   // baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}`,
   timeout: 60000,
-  headers: { "Content-Type": "application/json" },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 const HTTPService = {
@@ -16,7 +16,7 @@ const HTTPService = {
     headerParams?: object,
     body?: object,
     { timeout = 60000 } = {},
-    responseType: ResponseType = "json",
+    responseType: ResponseType = 'json'
   ): Promise<any> => {
     const headers = headerParams || {};
     const request: AxiosRequestConfig<any> = {
@@ -48,7 +48,7 @@ const HTTPService = {
     headerParams?: object,
     body?: object,
     { timeout = 60000 } = {},
-    responseType: ResponseType = "json",
+    responseType: ResponseType = 'json'
   ): Promise<any> => {
     const headers = headerParams || {};
     const request: AxiosRequestConfig<any> = {
@@ -63,7 +63,7 @@ const HTTPService = {
     } else {
       request.data = body || {};
     }
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem('access_token');
     request.headers = { Authorization: `Bearer ${token}` };
 
     return new Promise((resolve, reject) => {
@@ -77,7 +77,7 @@ const HTTPService = {
           }
         })
         .catch((err) => {
-          console.log(err.response.data)
+          console.log(err.response.data);
           resolve({ isError: true, status: err.response.status, data: err.response.data });
         });
     });

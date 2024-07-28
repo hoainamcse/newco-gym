@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import Auth from "@/apis/auth";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import Auth from '@/apis/auth';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
 
 export default function OAuthCallback() {
   const searchParams = useSearchParams();

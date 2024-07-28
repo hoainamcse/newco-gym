@@ -1,10 +1,10 @@
-"use client";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Health from "@/apis/health"
+'use client';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Health from '@/apis/health';
 
 export default function Page() {
-  const [healthStatus, setHealthStatus] = useState("unknown");
+  const [healthStatus, setHealthStatus] = useState('unknown');
 
   useEffect(() => {
     async function checkHealth() {
@@ -12,8 +12,8 @@ export default function Page() {
         const res: any = await Health.check();
         setHealthStatus(res.data.ping);
       } catch (e) {
-        console.error("Backend is not healthy", e);
-        setHealthStatus("error");
+        console.error('Backend is not healthy', e);
+        setHealthStatus('error');
       }
     }
 
@@ -23,8 +23,8 @@ export default function Page() {
 
   return (
     <div>
-      {healthStatus === "error" && <p>Error checking backend health</p>}
-      {healthStatus !== "error" && <p>Ping: {healthStatus}</p>}
+      {healthStatus === 'error' && <p>Error checking backend health</p>}
+      {healthStatus !== 'error' && <p>Ping: {healthStatus}</p>}
     </div>
   );
 }

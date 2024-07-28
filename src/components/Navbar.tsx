@@ -1,8 +1,8 @@
-"use client";
-import Image from "next/image";
-import Link from "next/link";
-import React, { MouseEvent, useContext, useEffect, useState } from "react";
-import { AppContext } from "@/context/App.context";
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { MouseEvent, useContext, useEffect, useState } from 'react';
+import { AppContext } from '@/context/App.context';
 
 interface NavLink {
   id: string;
@@ -17,7 +17,7 @@ const Navbar = (props: NavbarProps) => {
   const { user } = useContext(AppContext);
 
   const { navLinks } = props;
-  const [activeSection, setActiveSection] = useState<string>("home");
+  const [activeSection, setActiveSection] = useState<string>('home');
 
   const handleScroll = (e: MouseEvent<HTMLButtonElement>, id: string) => {
     e.preventDefault();
@@ -25,15 +25,15 @@ const Navbar = (props: NavbarProps) => {
     setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   useEffect(() => {
-    const sections = document.querySelectorAll("section");
+    const sections = document.querySelectorAll('section');
     const observerOptions = {
       root: null,
-      rootMargin: "0px",
+      rootMargin: '0px',
       threshold: 0.5, // Adjust as needed
     };
 
@@ -45,10 +45,7 @@ const Navbar = (props: NavbarProps) => {
       });
     };
 
-    const observer = new IntersectionObserver(
-      observerCallback,
-      observerOptions
-    );
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
 
     sections.forEach((section) => {
       observer.observe(section);
@@ -67,11 +64,11 @@ const Navbar = (props: NavbarProps) => {
         <div className="space-x-4 flex items-center">
           <button
             className="flex items-center focus:outline-none"
-            onClick={(e) => handleScroll(e, "home")}
+            onClick={(e) => handleScroll(e, 'home')}
           >
             <Image
               alt="logo"
-              src={"https://placeholder.com/32x32"}
+              src={'https://placeholder.com/32x32'}
               width={32}
               height={32}
               className="rounded-full"
@@ -85,13 +82,10 @@ const Navbar = (props: NavbarProps) => {
               <div
                 key={nl.id}
                 className={`text-xl p-2 text-white ${
-                  activeSection === nl.id ? "border-b-2" : "hover:text-gray-300"
+                  activeSection === nl.id ? 'border-b-2' : 'hover:text-gray-300'
                 }`}
               >
-                <button
-                  className="focus:outline-none px-2"
-                  onClick={(e) => handleScroll(e, nl.id)}
-                >
+                <button className="focus:outline-none px-2" onClick={(e) => handleScroll(e, nl.id)}>
                   {nl.title}
                 </button>
               </div>
