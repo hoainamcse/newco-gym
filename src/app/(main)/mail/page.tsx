@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers';
-import Image from 'next/image';
 
 import { Mail } from '@/app/(main)/mail/_components/mail';
 import { accounts, mails } from '@/app/(main)/mail/data';
@@ -14,7 +13,7 @@ export default function MailPage() {
   return (
     <Mail
       accounts={accounts}
-      mails={mails}
+      // mails={mails}
       defaultLayout={defaultLayout}
       defaultCollapsed={defaultCollapsed}
       navCollapsedSize={4}

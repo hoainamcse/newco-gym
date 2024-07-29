@@ -9,6 +9,9 @@ export interface Email {
   confidence_score: number;
   response: string;
   user_id: string;
+
+  name: string;
+  labels: string[];
 }
 
 export interface DriveLink {

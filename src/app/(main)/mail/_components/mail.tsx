@@ -27,14 +27,16 @@ import { MailList } from '@/app/(main)/mail/_components/mail-list';
 import { Nav } from '@/app/(main)/mail/_components/nav';
 import { type Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
+import GmailApi from '@/apis/gmail';
+import { Email } from '@/types';
 
 interface MailProps {
   accounts: {
     label: string;
-    email: string;
+    sender: string;
     icon: React.ReactNode;
   }[];
-  mails: Mail[];
+  // mails: Mail[];
   defaultLayout: number[] | undefined;
   defaultCollapsed?: boolean;
   navCollapsedSize: number;
@@ -42,13 +44,39 @@ interface MailProps {
 
 export function Mail({
   accounts,
-  mails,
+  // mails,
   defaultLayout = [20, 32, 48],
   defaultCollapsed = false,
   navCollapsedSize,
 }: MailProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [mail] = useMail();
+
+  const [mails, setMails] = React.useState<Email[]>([]);
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const loadMails = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await GmailApi.pendingEmail();
+      setMails(
+        data.map((item: any, index: number) => ({ ...item, labels: [], name: `User ${index}` }))
+      );
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      loadMails();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -168,10 +196,10 @@ export function Mail({
               <h1 className="text-xl font-bold">Inbox</h1>
               <TabsList className="ml-auto">
                 <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
-                  All mail
+                  Pending
                 </TabsTrigger>
                 <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
-                  Unread
+                  Non-pending
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -188,7 +216,7 @@ export function Mail({
               <MailList items={mails} />
             </TabsContent>
             <TabsContent value="unread" className="m-0">
-              <MailList items={mails.filter((item) => !item.read)} />
+              <MailList items={mails.filter((item) => !item.pending)} />
             </TabsContent>
           </Tabs>
         </ResizablePanel>

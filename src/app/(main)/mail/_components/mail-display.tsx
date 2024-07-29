@@ -21,10 +21,11 @@ import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Mail } from '@/app/(main)/mail/data';
+import { Email } from '@/types';
+// import { Mail as Email } from '@/app/(main)/mail/data';
 
 interface MailDisplayProps {
-  mail: Mail | null;
+  mail: Email | null;
 }
 
 export function MailDisplay({ mail }: MailDisplayProps) {
@@ -173,7 +174,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                 <div className="font-semibold">{mail.name}</div>
                 <div className="line-clamp-1 text-xs">{mail.subject}</div>
                 <div className="line-clamp-1 text-xs">
-                  <span className="font-medium">Reply-To:</span> {mail.email}
+                  <span className="font-medium">Reply-To:</span> {mail.sender}
                 </div>
               </div>
             </div>
@@ -184,12 +185,16 @@ export function MailDisplay({ mail }: MailDisplayProps) {
             )}
           </div>
           <Separator />
-          <div className="flex-1 whitespace-pre-wrap p-4 text-sm">{mail.text}</div>
+          <div className="flex-1 whitespace-pre-wrap p-4 text-sm">{mail.content}</div>
           <Separator className="mt-auto" />
           <div className="p-4">
             <form>
               <div className="grid gap-4">
-                <Textarea className="p-4" placeholder={`Reply ${mail.name}...`} />
+                <Textarea
+                  className="p-4 h-36"
+                  placeholder={`Reply ${mail.name}...`}
+                  value={mail.response}
+                />
                 <div className="flex items-center">
                   <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                     <Switch id="mute" aria-label="Mute thread" /> Mute this thread
