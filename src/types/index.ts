@@ -1,10 +1,14 @@
 export interface Email {
+  id: string;
+  threadId: string;
   sender: string;
-  date: string;
   subject: string;
+  date: string;
   content: string;
-  response: string;
+  pending: boolean;
   confidence_score: number;
+  response: string;
+  user_id: string;
 }
 
 export interface DriveLink {

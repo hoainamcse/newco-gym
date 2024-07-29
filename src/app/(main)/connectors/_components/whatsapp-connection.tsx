@@ -46,6 +46,7 @@ export function WhatsappConnection() {
   useEffect(() => {
     const item = localStorage.getItem('waUser');
     if (item) {
+      setValue(JSON.parse(item).phone_number);
       setWaUser(JSON.parse(item));
     }
   }, []);
