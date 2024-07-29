@@ -12,7 +12,7 @@ export function AuthorizeFacebook() {
   const [fbUser, setFbUser] = useState(null);
 
   const handleAuthorize = async () => {
-    const { url } = await AuthApi.facebookSignIn();
+    const { url } = await AuthApi.connectFacebook();
     const windowFeatures = 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no';
     window.open(url, '_blank', windowFeatures);
   };
@@ -40,6 +40,7 @@ export function AuthorizeFacebook() {
       if (status === 'success') {
         localStorage.setItem('fbUser', JSON.stringify(user));
         setFbUser(user);
+        toast(<span className="font-semibold text-teal-600">Update successful</span>);
       }
     };
 
