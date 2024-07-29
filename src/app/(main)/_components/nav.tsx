@@ -20,6 +20,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useContext } from 'react';
 import { AppContext } from '@/context/App.context';
+import { cn } from '@/lib/utils';
 
 function Nav() {
   const { user } = useContext(AppContext);
@@ -34,25 +35,28 @@ function Nav() {
         </Link>
         <Link
           href={path[0]}
-          className={`${
-            pathname === path[0] ? 'text-foreground' : 'text-muted-foreground'
-          } transition-colors hover:text-foreground flex gap-2 items-center`}
+          className={cn(
+            pathname === path[0] ? 'text-foreground' : 'text-muted-foreground',
+            'transition-colors hover:text-foreground flex gap-2 items-center'
+          )}
         >
           <Cable className="size-5" /> Connectors
         </Link>
         <Link
           href={path[1]}
-          className={`${
-            pathname === path[1] ? 'text-foreground' : 'text-muted-foreground'
-          } transition-colors hover:text-foreground flex gap-2 items-center`}
+          className={cn(
+            pathname === path[1] ? 'text-foreground' : 'text-muted-foreground',
+            'transition-colors hover:text-foreground flex gap-2 items-center'
+          )}
         >
           <BookKey className="size-5" /> Knowledge Base
         </Link>
         <Link
           href={path[2]}
-          className={`${
-            pathname === path[2] ? 'text-foreground' : 'text-muted-foreground'
-          } transition-colors hover:text-foreground flex gap-2 items-center`}
+          className={cn(
+            pathname === path[2] ? 'text-foreground' : 'text-muted-foreground',
+            'transition-colors hover:text-foreground flex gap-2 items-center'
+          )}
         >
           <Mails className="size-5" /> Email Automation
         </Link>
@@ -80,25 +84,28 @@ function Nav() {
             </Link>
             <Link
               href={path[0]}
-              className={`${
-                pathname === path[0] ? '' : 'text-muted-foreground'
-              } hover:text-foreground flex gap-2 items-center`}
+              className={cn(
+                pathname !== path[0] && 'text-muted-foreground',
+                'hover:text-foreground flex gap-2 items-center'
+              )}
             >
               <Cable className="size-5" /> Connectors
             </Link>
             <Link
               href={path[1]}
-              className={`${
-                pathname === path[1] ? '' : 'text-muted-foreground'
-              } hover:text-foreground flex gap-2 items-center`}
+              className={cn(
+                pathname !== path[1] && 'text-muted-foreground',
+                'hover:text-foreground flex gap-2 items-center'
+              )}
             >
               <BookKey className="size-5" /> Knowledge Base
             </Link>
             <Link
               href={path[2]}
-              className={`${
-                pathname === path[2] ? '' : 'text-muted-foreground'
-              } hover:text-foreground flex gap-2 items-center`}
+              className={cn(
+                pathname !== path[2] && 'text-muted-foreground',
+                'hover:text-foreground flex gap-2 items-center'
+              )}
             >
               <Mails className="size-5" /> Email Automation
             </Link>

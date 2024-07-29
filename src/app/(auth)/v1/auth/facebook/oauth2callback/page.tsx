@@ -2,9 +2,9 @@
 
 import AuthApi from '@/apis/auth';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
-export default function OAuthCallback() {
+export default function CallbackFacebook() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function OAuthCallback() {
         searchParams.forEach((value, key) => {
           params[key] = value;
         });
-        const res = await AuthApi.oauth2callback(params);
+        const res = await AuthApi.facebookCallback(params);
 
         window.opener.postMessage(JSON.stringify(res), process.env.NEXT_PUBLIC_BASE_URL);
         window.close();

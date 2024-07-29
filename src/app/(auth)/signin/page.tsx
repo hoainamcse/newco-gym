@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { FaGoogle } from 'react-icons/fa';
-import Auth from '@/apis/auth';
+import AuthApi from '@/apis/auth';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -11,8 +11,8 @@ export default function SignIn() {
   const handleSignIn = async () => {
     const {
       data: { url },
-    } = await Auth.signIn();
-    const windowFeatures = 'width=500,height=600,menubar=no,toolbar=no,location=no,status=no';
+    } = await AuthApi.signIn();
+    const windowFeatures = 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no';
     window.open(url, '_blank', windowFeatures);
   };
 

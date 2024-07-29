@@ -1,4 +1,4 @@
-import User from '@/apis/user';
+import UserApi from '@/apis/user';
 import { createContext, useEffect, useState } from 'react';
 
 interface IAppContext {
@@ -16,7 +16,7 @@ export const AppProvider = ({ children }: any) => {
 
   useEffect(() => {
     const run = async () => {
-      const { isError, status, data } = await User.me();
+      const { isError, status, data } = await UserApi.me();
       if (!isError) {
         const { user_info: user } = data;
         setUser(user);
