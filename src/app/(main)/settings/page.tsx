@@ -13,7 +13,7 @@ function Settings() {
         <h1 className="text-4xl font-semibold">Settings</h1>
         <p className="text-muted-foreground">Authorize your accounts for content posting</p>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-4 mt-16">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 md:grid-cols-2 gap-4 mt-16">
         <div className="w-fit place-self-center">
           <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6">
             <Image
