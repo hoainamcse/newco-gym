@@ -6,14 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
-function Settings() {
+function Connectors() {
   return (
     <div className="p-4 md:p-8">
       <div className="mx-auto grid w-full max-w-6xl gap-4 text-center">
-        <h1 className="text-4xl font-semibold">Settings</h1>
+        <h1 className="text-4xl font-semibold">Connectors</h1>
         <p className="text-muted-foreground">Authorize your accounts for content posting</p>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 md:grid-cols-2 gap-4 mt-16">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 md:grid-cols-2 gap-6 mt-6 lg:mt-16">
         <div className="w-fit place-self-center">
           <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6">
             <Image
@@ -64,4 +64,4 @@ function Settings() {
   );
 }
 
-export default Settings;
+export default Connectors;

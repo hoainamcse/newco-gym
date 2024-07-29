@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, Package2, Search } from 'lucide-react';
+import { BookKey, Cable, Mails, Menu, Package2, PlugZap, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -24,7 +24,7 @@ import { AppContext } from '@/context/App.context';
 function Nav() {
   const { user } = useContext(AppContext);
   const pathname = usePathname();
-  const path = ['/knowledge', '/mail', '/analytics', '/settings'];
+  const path = ['/connectors', '/knowledge', '/mail', '/analytics'];
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -36,34 +36,34 @@ function Nav() {
           href={path[0]}
           className={`${
             pathname === path[0] ? 'text-foreground' : 'text-muted-foreground'
-          } transition-colors hover:text-foreground`}
+          } transition-colors hover:text-foreground flex gap-2 items-center`}
         >
-          Knowledge Base
+          <Cable className="size-5" /> Connectors
         </Link>
         <Link
           href={path[1]}
           className={`${
             pathname === path[1] ? 'text-foreground' : 'text-muted-foreground'
-          } transition-colors hover:text-foreground`}
+          } transition-colors hover:text-foreground flex gap-2 items-center`}
         >
-          Email Automation
+          <BookKey className="size-5" /> Knowledge Base
         </Link>
         <Link
           href={path[2]}
           className={`${
             pathname === path[2] ? 'text-foreground' : 'text-muted-foreground'
-          } transition-colors hover:text-foreground`}
+          } transition-colors hover:text-foreground flex gap-2 items-center`}
         >
-          Analytics
+          <Mails className="size-5" /> Email Automation
         </Link>
-        <Link
+        {/* <Link
           href={path[3]}
           className={`${
             pathname === path[3] ? 'text-foreground' : 'text-muted-foreground'
           } transition-colors hover:text-foreground`}
         >
-          Settings
-        </Link>
+          Analytics
+        </Link> */}
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -82,38 +82,38 @@ function Nav() {
               href={path[0]}
               className={`${
                 pathname === path[0] ? '' : 'text-muted-foreground'
-              } hover:text-foreground`}
+              } hover:text-foreground flex gap-2 items-center`}
             >
-              Knowledge Base
+              <Cable className="size-5" /> Connectors
             </Link>
             <Link
               href={path[1]}
               className={`${
                 pathname === path[1] ? '' : 'text-muted-foreground'
-              } hover:text-foreground`}
+              } hover:text-foreground flex gap-2 items-center`}
             >
-              Email Automation
+              <BookKey className="size-5" /> Knowledge Base
             </Link>
             <Link
               href={path[2]}
               className={`${
                 pathname === path[2] ? '' : 'text-muted-foreground'
-              } hover:text-foreground`}
+              } hover:text-foreground flex gap-2 items-center`}
             >
-              Analytics
+              <Mails className="size-5" /> Email Automation
             </Link>
-            <Link
+            {/* <Link
               href={path[3]}
               className={`${
                 pathname === path[3] ? '' : 'text-muted-foreground'
               } hover:text-foreground`}
             >
-              Settings
-            </Link>
+              Analytics
+            </Link> */}
           </nav>
         </SheetContent>
       </Sheet>
-      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+      <div className="flex-1 flex items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
         <form className="ml-auto flex-1 sm:flex-initial">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
