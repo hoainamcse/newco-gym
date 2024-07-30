@@ -9,9 +9,11 @@ const Introduction = () => {
         matters in your business journey.
       </p>
       <div className="flex space-x-4">
-        <button className="bg-white text-black py-2 px-6 rounded-full hover:bg-gray-300">
-          Get Started
-        </button>
+        <Link href="/connectors">
+          <button className="bg-white text-black py-2 px-6 rounded-full hover:bg-gray-300">
+            Get Started
+          </button>
+        </Link>
         <Link href="/mail">
           <button className="bg-transparent border border-white text-white py-2 px-6 rounded-full hover:bg-gray-700">
             View Demo

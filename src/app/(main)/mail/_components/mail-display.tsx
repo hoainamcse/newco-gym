@@ -1,3 +1,5 @@
+'use client';
+
 import { addDays, addHours, format, nextSaturday } from 'date-fns';
 import {
   Archive,
@@ -22,14 +24,56 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Email } from '@/types';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { ReloadIcon } from '@radix-ui/react-icons';
+import { useEffect, useState } from 'react';
+import GmailApi from '@/apis/gmail';
+import { toast } from 'sonner';
 // import { Mail as Email } from '@/app/(main)/mail/data';
 
 interface MailDisplayProps {
   mail: Email | null;
 }
 
+const formSchema = z.object({
+  body: z.string().min(2, {
+    message: 'Reply must be at least 2 characters',
+  }),
+});
+
 export function MailDisplay({ mail }: MailDisplayProps) {
   const today = new Date();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      body: '',
+    },
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsLoading(true);
+    try {
+      const res = await GmailApi.replyEmail({ id: mail?.id, body: values.body });
+      console.log(res);
+      toast(<span className="font-semibold text-teal-600">Update successful</span>);
+    } catch (error) {
+      toast(<span className="font-semibold text-red-600">Error happen</span>);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (mail) {
+      form.setValue('body', mail.response);
+    }
+  }, [form, mail]);
 
   return (
     <div className="flex h-full flex-col">
@@ -188,23 +232,37 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           <div className="flex-1 whitespace-pre-wrap p-4 text-sm">{mail.content}</div>
           <Separator className="mt-auto" />
           <div className="p-4">
-            <form>
-              <div className="grid gap-4">
-                <Textarea
-                  className="p-4 h-36"
-                  placeholder={`Reply ${mail.name}...`}
-                  value={mail.response}
-                />
-                <div className="flex items-center">
-                  <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
-                    <Switch id="mute" aria-label="Mute thread" /> Mute this thread
-                  </Label>
-                  <Button onClick={(e) => e.preventDefault()} size="sm" className="ml-auto">
-                    Send
-                  </Button>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="grid gap-4">
+                  <FormField
+                    control={form.control}
+                    name="body"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            className="p-4 h-36"
+                            placeholder={`Reply ${mail.name}...`}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-center">
+                    <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
+                      <Switch id="mute" aria-label="Mute thread" /> Mute this thread
+                    </Label>
+                    <Button type="submit" size="sm" className="ml-auto">
+                      {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                      Send
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </Form>
           </div>
         </div>
       ) : (

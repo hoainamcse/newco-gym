@@ -29,6 +29,7 @@ import { type Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import GmailApi from '@/apis/gmail';
 import { Email } from '@/types';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 interface MailProps {
   accounts: {
@@ -54,14 +55,20 @@ export function Mail({
 
   const [mails, setMails] = React.useState<Email[]>([]);
 
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   const loadMails = async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const { data } = await GmailApi.pendingEmail();
       setMails(
-        data.map((item: any, index: number) => ({ ...item, labels: [], name: `User ${index}` }))
+        data
+          .map((item: any, index: number) => ({
+            ...item,
+            labels: [],
+            name: `Sender ${index}`,
+          }))
+          .sort((a: Email, b: Email) => new Date(b.date).valueOf() - new Date(a.date).valueOf())
       );
     } catch (err) {
       console.log(err);
@@ -86,7 +93,7 @@ export function Mail({
           document.cookie = `react-resizable-panels:layout:mail=${JSON.stringify(sizes)}`;
         }}
       >
-        <ResizablePanel
+        {/* <ResizablePanel
           defaultSize={defaultLayout[0]}
           collapsedSize={navCollapsedSize}
           collapsible={true}
@@ -189,7 +196,7 @@ export function Mail({
             ]}
           />
         </ResizablePanel>
-        <ResizableHandle withHandle />
+        <ResizableHandle withHandle /> */}
         <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
           <Tabs defaultValue="all">
             <div className="flex items-center px-4 py-2">
@@ -213,6 +220,7 @@ export function Mail({
               </form>
             </div>
             <TabsContent value="all" className="m-0">
+              {isLoading && <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />}
               <MailList items={mails} />
             </TabsContent>
             <TabsContent value="unread" className="m-0">
