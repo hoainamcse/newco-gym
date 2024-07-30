@@ -30,6 +30,7 @@ import { useMail } from '@/app/(main)/mail/user-mail';
 import GmailApi from '@/apis/gmail';
 import { Email } from '@/types';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { toast } from 'sonner';
 
 interface MailProps {
   accounts: {
@@ -71,7 +72,7 @@ export function Mail({
           .sort((a: Email, b: Email) => new Date(b.date).valueOf() - new Date(a.date).valueOf())
       );
     } catch (err) {
-      console.log(err);
+      toast(<span className="font-semibold text-red-600">Error happen</span>);
     } finally {
       setIsLoading(false);
     }
@@ -83,6 +84,27 @@ export function Mail({
     }, 5000);
 
     return () => clearInterval(interval);
+  }, []);
+
+  React.useEffect(() => {
+    const startWatchingMail = async () => {
+      try {
+        await GmailApi.startWatching();
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    // const endWatchingMail = async () => {
+    //   try {
+    //     const { data } = await GmailApi.stopWatching();
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // };
+
+    startWatchingMail();
+
+    // return () => endWatchingMail();
   }, []);
 
   return (

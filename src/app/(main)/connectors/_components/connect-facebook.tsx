@@ -8,7 +8,7 @@ import { Link2, SquareMousePointer } from 'lucide-react';
 
 import AuthApi from '@/apis/auth';
 
-export function AuthorizeFacebook() {
+export function ConnectFacebook() {
   const [fbUser, setFbUser] = useState(null);
 
   const handleAuthorize = async () => {

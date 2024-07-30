@@ -59,8 +59,8 @@ export function MailDisplay({ mail }: MailDisplayProps) {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const res = await GmailApi.replyEmail({ id: mail?.id, body: values.body });
-      console.log(res);
+      await GmailApi.replyEmail({ id: mail?.id, body: values.body });
+      form.reset();
       toast(<span className="font-semibold text-teal-600">Update successful</span>);
     } catch (error) {
       toast(<span className="font-semibold text-red-600">Error happen</span>);
@@ -69,11 +69,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
     }
   };
 
-  useEffect(() => {
-    if (mail) {
-      form.setValue('body', mail.response);
-    }
-  }, [form, mail]);
+  // useEffect(() => {
+  //   if (mail) {
+  //     form.setValue('body', mail.response);
+  //   }
+  // }, [form, mail]);
 
   return (
     <div className="flex h-full flex-col">
@@ -215,7 +215,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
-                <div className="font-semibold">{mail.name}</div>
+                <div className="font-semibold">{mail.sender}</div>
                 <div className="line-clamp-1 text-xs">{mail.subject}</div>
                 <div className="line-clamp-1 text-xs">
                   <span className="font-medium">Reply-To:</span> {mail.sender}
@@ -243,7 +243,8 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                         <FormControl>
                           <Textarea
                             className="p-4 h-36"
-                            placeholder={`Reply ${mail.name}...`}
+                            // placeholder={`Reply ${mail.name}...`}
+                            placeholder={`Reply ${mail.sender}...`}
                             {...field}
                           />
                         </FormControl>
