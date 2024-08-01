@@ -61,7 +61,7 @@ export function Mail({
   const loadMails = async () => {
     // setIsLoading(true);
     try {
-      const { data } = await GmailApi.pendingEmail();
+      const { data } = await GmailApi.getEmail();
       setMails(
         data
           .map((item: any, index: number) => ({
@@ -223,31 +223,35 @@ export function Mail({
           <Tabs defaultValue="all">
             <div className="flex items-center px-4 py-2">
               <h1 className="text-xl font-bold">Inbox</h1>
-              <TabsList className="ml-auto">
+              {/* <TabsList className="ml-auto">
                 <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
                   Pending
                 </TabsTrigger>
                 <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
                   Non-pending
                 </TabsTrigger>
-              </TabsList>
+              </TabsList> */}
             </div>
             <Separator />
-            <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            {/* <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <form>
-                <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search" className="pl-8" />
-                </div>
+              <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search" className="pl-8" />
+              </div>
               </form>
+              </div> */}
+            <div className="m-0">
+              {isLoading && <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />}
+              <MailList items={mails} />
             </div>
-            <TabsContent value="all" className="m-0">
+            {/* <TabsContent value="all" className="m-0">
               {isLoading && <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />}
               <MailList items={mails} />
             </TabsContent>
             <TabsContent value="unread" className="m-0">
               <MailList items={mails.filter((item) => !item.pending)} />
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />

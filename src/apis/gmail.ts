@@ -11,6 +11,7 @@ const GmailApi = {
     const data = await axiosClient.post('/v1/gmail/reply-email', payload);
     return data.data;
   },
+  getEmail: () => HTTPService.sendRequestWithToken('GET', '/v1/gmail'),
 };
 
 export default GmailApi;

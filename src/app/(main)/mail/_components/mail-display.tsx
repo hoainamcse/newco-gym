@@ -77,7 +77,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center p-2">
+      {/* <div className="flex items-center p-2">
         <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -200,7 +200,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <Separator />
+      <Separator /> */}
       {mail ? (
         <div className="flex flex-1 flex-col">
           <div className="flex items-start p-4">
@@ -242,7 +242,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                       <FormItem>
                         <FormControl>
                           <Textarea
-                            className="p-4 h-36"
+                            className="p-4 h-28"
                             // placeholder={`Reply ${mail.name}...`}
                             placeholder={`Reply ${mail.sender}...`}
                             {...field}
