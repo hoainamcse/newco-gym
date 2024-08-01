@@ -10,6 +10,7 @@ import {
   MessagesSquare,
   Search,
   Send,
+  Settings,
   ShoppingCart,
   Trash2,
   Users2,
@@ -20,7 +21,7 @@ import { Input } from '@/components/ui/input';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AccountSwitcher } from '@/app/(main)/mail/_components/account-switcher';
 import { MailDisplay } from '@/app/(main)/mail/_components/mail-display';
 import { MailList } from '@/app/(main)/mail/_components/mail-list';
@@ -31,6 +32,8 @@ import GmailApi from '@/apis/gmail';
 import { Email } from '@/types';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 interface MailProps {
   accounts: {
@@ -58,6 +61,8 @@ export function Mail({
 
   const [isLoading, setIsLoading] = React.useState(true);
 
+  const router = useRouter();
+
   const loadMails = async () => {
     // setIsLoading(true);
     try {
@@ -66,7 +71,7 @@ export function Mail({
         data
           .map((item: any, index: number) => ({
             ...item,
-            labels: [],
+            labels: [item.pending ? 'Cannot Reply' : 'Auto Replied'],
             name: `Sender ${index}`,
           }))
           .sort((a: Email, b: Email) => new Date(b.date).valueOf() - new Date(a.date).valueOf())
@@ -223,35 +228,48 @@ export function Mail({
           <Tabs defaultValue="all">
             <div className="flex items-center px-4 py-2">
               <h1 className="text-xl font-bold">Inbox</h1>
-              {/* <TabsList className="ml-auto">
+              <TabsList className="ml-auto">
                 <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
-                  Pending
+                  All
+                </TabsTrigger>
+                <TabsTrigger value="read" className="text-zinc-600 dark:text-zinc-200">
+                  Auto Replied
                 </TabsTrigger>
                 <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
-                  Non-pending
+                  Cannot Reply
                 </TabsTrigger>
-              </TabsList> */}
+              </TabsList>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button size="icon" variant="ghost" className='ml-2' onClick={() => router.push('/settings')}>
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Configure Confidence Level</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
             <Separator />
             {/* <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <form>
-              <div className="relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search" className="pl-8" />
-              </div>
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <Input placeholder="Search" className="pl-8" />
+                </div>
               </form>
-              </div> */}
-            <div className="m-0">
-              {isLoading && <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />}
-              <MailList items={mails} />
-            </div>
-            {/* <TabsContent value="all" className="m-0">
+            </div> */}
+            <div className='p-2'></div>
+            <TabsContent value="all" className="m-0">
               {isLoading && <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />}
               <MailList items={mails} />
             </TabsContent>
-            <TabsContent value="unread" className="m-0">
+            <TabsContent value="read" className="m-0">
               <MailList items={mails.filter((item) => !item.pending)} />
-            </TabsContent> */}
+            </TabsContent>
+            <TabsContent value="unread" className="m-0">
+              <MailList items={mails.filter((item) => item.pending)} />
+            </TabsContent>
           </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />

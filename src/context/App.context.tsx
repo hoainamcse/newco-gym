@@ -1,3 +1,5 @@
+'use client';
+
 import UserApi from '@/apis/user';
 import { createContext, useEffect, useState } from 'react';
 
@@ -24,6 +26,7 @@ export const AppProvider = ({ children }: any) => {
       const { error } = data;
       if (status === 401) {
         console.error(error.message);
+        setUser(null);
       }
     };
     run();

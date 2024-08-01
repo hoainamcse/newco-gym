@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { BookKey, Cable, Mails, Menu, Package2, PlugZap, Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -23,9 +23,19 @@ import { AppContext } from '@/context/App.context';
 import { cn } from '@/lib/utils';
 
 function Nav() {
-  const { user } = useContext(AppContext);
+  const { user, setUser } = useContext(AppContext);
   const pathname = usePathname();
+  const router = useRouter();
   const path = ['/connectors', '/knowledge', '/mail'];
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    setUser(null);
+    router.push('/');
+  }
+
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -119,7 +129,7 @@ function Nav() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="/avatars/01.png" alt="@shadcn" />
+                <AvatarImage src={user?.picture} alt="@shadcn" />
                 <AvatarFallback>SC</AvatarFallback>
               </Avatar>
             </Button>
@@ -127,28 +137,28 @@ function Nav() {
           <DropdownMenuContent className="w-56" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">shadcn</p>
-                <p className="text-xs leading-none text-muted-foreground">m@example.com</p>
+                <p className="text-sm font-medium leading-none">{user?.name}</p>
+                <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem>
+            <DropdownMenuGroup>
+              {/* <DropdownMenuItem>
                 Profile
                 <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 Billing
                 <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              </DropdownMenuItem> */}
+              <DropdownMenuItem onClick={() => router.push('/settings')}>
                 Settings
                 <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
               </DropdownMenuItem>
-              <DropdownMenuItem>New Team</DropdownMenuItem>
+              {/* <DropdownMenuItem>New Team</DropdownMenuItem> */}
             </DropdownMenuGroup>
-            <DropdownMenuSeparator /> */}
-            <DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout}>
               Log out
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>

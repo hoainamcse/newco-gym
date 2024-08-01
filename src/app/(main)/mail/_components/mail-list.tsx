@@ -37,7 +37,16 @@ export function MailList({ items }: MailListProps) {
                 <div className="flex items-center gap-2">
                   {/* <div className="font-semibold">{item.name}</div> */}
                   <div className="font-semibold">{item.sender}</div>
-                  {!item.pending && <span className="flex h-2 w-2 rounded-full bg-blue-600" />}
+                  {/* {!item.pending && <span className="flex h-2 w-2 rounded-full bg-blue-600" />} */}
+                  {item.labels.length ? (
+                    <div className="flex items-center gap-2">
+                      {item.labels.map((label) => (
+                        <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
+                          {label}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
                 <div
                   className={cn(
@@ -55,7 +64,7 @@ export function MailList({ items }: MailListProps) {
             <div className="line-clamp-2 text-xs text-muted-foreground">
               {item.content.substring(0, 300)}
             </div>
-            {item.labels.length ? (
+            {/* {item.labels.length ? (
               <div className="flex items-center gap-2">
                 {item.labels.map((label) => (
                   <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
@@ -63,7 +72,7 @@ export function MailList({ items }: MailListProps) {
                   </Badge>
                 ))}
               </div>
-            ) : null}
+            ) : null} */}
           </button>
         ))}
       </div>
@@ -72,12 +81,12 @@ export function MailList({ items }: MailListProps) {
 }
 
 function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['variant'] {
-  if (['work'].includes(label.toLowerCase())) {
+  if (['auto replied'].includes(label.toLowerCase())) {
     return 'default';
   }
 
-  if (['personal'].includes(label.toLowerCase())) {
-    return 'outline';
+  if (['cannot reply'].includes(label.toLowerCase())) {
+    return 'destructive';
   }
 
   return 'secondary';

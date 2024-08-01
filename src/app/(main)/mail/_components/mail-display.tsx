@@ -253,9 +253,9 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                     )}
                   />
                   <div className="flex items-center">
-                    <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
+                    {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
-                    </Label>
+                    </Label> */}
                     <Button type="submit" size="sm" className="ml-auto">
                       {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
                       Send
