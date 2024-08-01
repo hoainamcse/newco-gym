@@ -8,7 +8,7 @@ import { Link2, SquareMousePointer } from 'lucide-react';
 
 import AuthApi from '@/apis/auth';
 
-export function ConnectFacebook() {
+export function FacebookConnection() {
   const [fbUser, setFbUser] = useState(null);
 
   const handleAuthorize = async () => {
@@ -80,18 +80,6 @@ export function ConnectFacebook() {
         )}
         <p className="text-sm font-medium mt-auto">Authorize Facebook for Content Upload</p>
       </div>
-      {fbUser && (
-        <div className="flex gap-2 mt-4">
-          <Button className="rounded-none" variant="outline" onClick={handleDisconnect}>
-            <Link2 className="h-4 w-4 mr-2" />
-            Disconnect
-          </Button>
-          <Button className="rounded-none" onClick={handleChooseOther}>
-            <SquareMousePointer className="h-4 w-4 mr-2" />
-            Choose the another account
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

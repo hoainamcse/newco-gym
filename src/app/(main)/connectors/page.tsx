@@ -1,4 +1,4 @@
-import { ConnectFacebook } from './_components/connect-facebook';
+import { FacebookConnection } from './_components/facebook-connection';
 import { WhatsappConnection } from './_components/whatsapp-connection';
 
 function Connectors() {
@@ -9,7 +9,7 @@ function Connectors() {
         <p className="text-muted-foreground">Authorize your accounts for content posting</p>
       </div>
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 md:grid-cols-2 gap-6 mt-6 lg:mt-16">
-        <ConnectFacebook />
+        <FacebookConnection />
         <WhatsappConnection />
       </div>
     </div>
