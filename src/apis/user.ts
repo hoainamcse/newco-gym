@@ -1,7 +1,10 @@
-import HTTPService from '../services/HTTPService';
+import axiosClient from '@/lib/axios';
 
 const UserApi = {
-  me: () => HTTPService.sendRequestWithToken('GET', '/v1/gmail/users/me'),
+  me: async () => {
+    const data = await axiosClient.get('/v1/gmail/users/me');
+    return data.data;
+  },
 };
 
 export default UserApi;

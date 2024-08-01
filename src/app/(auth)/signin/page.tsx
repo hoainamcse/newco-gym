@@ -30,13 +30,10 @@ export default function SignIn() {
       console.log(user);
 
       if (status === 'success') {
-        // Store the user data and tokens
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('access_token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
-
-        // Redirect to the home page
-        router.push('/');
+        router.push('/connectors');
       }
     };
 

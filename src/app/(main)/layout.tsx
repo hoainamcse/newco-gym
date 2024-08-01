@@ -7,9 +7,18 @@ import Nav from './_components/nav';
 import { AppContext } from '@/context/App.context';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 function MainLayout({ children }: React.PropsWithChildren) {
-  const { user } = useContext(AppContext);
+  const { user, isLoading } = useContext(AppContext);
+
+  if (isLoading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <ReloadIcon className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   if (!user) {
     return (

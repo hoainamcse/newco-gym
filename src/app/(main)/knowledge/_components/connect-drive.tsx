@@ -71,9 +71,9 @@ export function ConnectDrive() {
   }, [form]);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6 place-self-center">
+    <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center px-6 place-self-center">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='w-full flex flex-col justify-center items-center gap-6 '>
           <Link2 className="w-16 h-16" strokeWidth="0.75" />
           <FormField
             control={form.control}
@@ -119,8 +119,8 @@ export function ConnectDrive() {
               Import knowledge
             </Button>
           )}
-        </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+    </div>
   );
 }

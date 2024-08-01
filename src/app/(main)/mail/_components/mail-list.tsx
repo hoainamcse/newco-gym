@@ -41,7 +41,7 @@ export function MailList({ items }: MailListProps) {
                   {item.labels.length ? (
                     <div className="flex items-center gap-2">
                       {item.labels.map((label) => (
-                        <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
+                        <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
                           {label}
                         </Badge>
                       ))}
@@ -80,13 +80,13 @@ export function MailList({ items }: MailListProps) {
   );
 }
 
-function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['variant'] {
+function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['className'] {
   if (['auto replied'].includes(label.toLowerCase())) {
-    return 'default';
+    return 'bg-blue-500';
   }
 
   if (['cannot reply'].includes(label.toLowerCase())) {
-    return 'destructive';
+    return 'bg-red-500';
   }
 
   return 'secondary';

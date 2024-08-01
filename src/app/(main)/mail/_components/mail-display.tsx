@@ -29,9 +29,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { useEffect, useState } from 'react';
+import { ComponentProps, useEffect, useState } from 'react';
 import GmailApi from '@/apis/gmail';
 import { toast } from 'sonner';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 // import { Mail as Email } from '@/app/(main)/mail/data';
 
 interface MailDisplayProps {
@@ -253,6 +255,9 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                     )}
                   />
                   <div className="flex items-center">
+                    <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
+                      Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
+                    </Badge>
                     {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}
@@ -271,4 +276,16 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       )}
     </div>
   );
+}
+
+function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['className'] {
+  if (['auto replied'].includes(label.toLowerCase())) {
+    return 'bg-blue-500';
+  }
+
+  if (['cannot reply'].includes(label.toLowerCase())) {
+    return 'bg-red-500';
+  }
+
+  return 'secondary';
 }

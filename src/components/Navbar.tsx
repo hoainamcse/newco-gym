@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { MouseEvent, useContext, useEffect, useState } from 'react';
 import { AppContext } from '@/context/App.context';
+import { Skeleton } from './ui/skeleton';
 
 interface NavLink {
   id: string;
@@ -14,7 +15,7 @@ interface NavbarProps {
 }
 
 const Navbar = (props: NavbarProps) => {
-  const { user } = useContext(AppContext);
+  const { user, isLoading } = useContext(AppContext);
 
   const { navLinks } = props;
   const [activeSection, setActiveSection] = useState<string>('home');
@@ -92,7 +93,12 @@ const Navbar = (props: NavbarProps) => {
             ))}
         </div>
         <div className="space-x-4">
-          {user ? (
+          {isLoading ? (
+            <div className="flex items-center space-x-4">
+              <Skeleton className="h-10 w-10 rounded-full bg-white" />
+              <Skeleton className="h-4 w-[160px] bg-white" />
+            </div>
+          ) : user ? (
             <div className="flex items-center font-medium">
               <Image
                 alt="user"

@@ -6,39 +6,36 @@ import { createContext, useEffect, useState } from 'react';
 interface IAppContext {
   user: any;
   setUser: React.Dispatch<React.SetStateAction<any>>;
+  isLoading: boolean;
 }
 
 export const AppContext = createContext<IAppContext>({
   user: null,
   setUser: () => {},
+  isLoading: true,
 });
 
 export const AppProvider = ({ children }: any) => {
   const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const run = async () => {
-      const { isError, status, data } = await UserApi.me();
-      if (!isError) {
-        const { user_info: user } = data;
-        setUser(user);
-      }
-      const { error } = data;
-      if (status === 401) {
-        console.error(error.message);
-        setUser(null);
+      setIsLoading(true);
+      try {
+        const { data } = await UserApi.me();
+        setUser(data.user_info);
+      } catch (err: any) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     };
     run();
   }, []);
 
   return (
-    <AppContext.Provider
-      value={{
-        user,
-        setUser,
-      }}
-    >
+    <AppContext.Provider value={{ user, setUser, isLoading }}>
       {children}
     </AppContext.Provider>
   );
