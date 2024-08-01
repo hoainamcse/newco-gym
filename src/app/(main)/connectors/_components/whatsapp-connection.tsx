@@ -10,13 +10,14 @@ import { Input } from '@/components/ui/input';
 
 import AuthApi from '@/apis/auth';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { PhoneInput } from '@/components/ui/phone-input';
 
 export function WhatsappConnection() {
   const [waUser, setWaUser] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState();
 
   const handleAuthorize = async () => {
     setIsLoading(true);
@@ -53,26 +54,38 @@ export function WhatsappConnection() {
 
   return (
     <div className="w-fit min-w-[390px] place-self-center">
-      <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6">
+      <div className="h-[390px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
+        <p className="font-medium mb-auto">WhatsApp Authorization</p>
         <Image
           width="80"
           height="80"
-          src="https://img.icons8.com/?size=100&id=16733&format=png&color=000000"
+          src="https://img.icons8.com/color/480/whatsapp--v1.png"
           alt="whatsapp--v1"
         />
-        <div className="flex items-stretch gap-2">
-          <Input
-            placeholder="Phone number"
-            className="bg-white rounded-none"
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            disabled={!!waUser}
-          />
-          <Button className="rounded-none" onClick={handleAuthorize} disabled={!!waUser}>
-            {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-            {!!waUser ? 'Authorized' : 'Authorize'}
+        {!waUser ? (
+          <>
+            <PhoneInput
+              placeholder="Phone number"
+              className="bg-white rounded-none w-full"
+              value={value}
+              // onChange={(event) => setValue(event.target.value)}
+              onChange={(event) => console.log(event)}
+              disabled={!!waUser}
+            />
+            <Button className="bg-[#40c351] hover:bg-[#40c351] w-full" onClick={handleAuthorize}>
+              {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+              Connect with WhatsApp
+            </Button>
+          </>
+        ) : (
+          <Button variant="destructive" className="w-full" onClick={handleDisconnect}>
+            <Link2 className="h-4 w-4 mr-2" />
+            Disconnect
           </Button>
-        </div>
+        )}
+        <p className="text-sm font-medium mt-auto">
+          Authorize for WhatsApp Content Generation Chatbot
+        </p>
       </div>
       {waUser && (
         <div className="flex gap-2 mt-4">

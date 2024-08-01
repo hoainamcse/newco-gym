@@ -60,16 +60,25 @@ export function ConnectFacebook() {
 
   return (
     <div className="w-fit min-w-[390px] place-self-center">
-      <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6">
+      <div className="h-[390px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
+        <p className="font-medium mb-auto">Facebook Authorization</p>
         <Image
           width="80"
           height="80"
-          src="https://img.icons8.com/?size=100&id=118467&format=png&color=000000"
+          src="https://img.icons8.com/color/480/facebook-new.png"
           alt="facebook-new"
         />
-        <Button className="rounded-none" onClick={handleAuthorize} disabled={!!fbUser}>
-          {!!fbUser ? 'Authorized' : 'Authorize'}
-        </Button>
+        {!fbUser ? (
+          <Button className="bg-[#039be5] hover:bg-[#039be5] w-full" onClick={handleAuthorize}>
+            Connect with Facebook
+          </Button>
+        ) : (
+          <Button variant="destructive" className="w-full" onClick={handleDisconnect}>
+            <Link2 className="h-4 w-4 mr-2" />
+            Disconnect
+          </Button>
+        )}
+        <p className="text-sm font-medium mt-auto">Authorize Facebook for Content Upload</p>
       </div>
       {fbUser && (
         <div className="flex gap-2 mt-4">
