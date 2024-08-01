@@ -15,6 +15,7 @@ export interface Email {
 }
 
 export interface DriveLink {
+  confidence_threshold: number;
   created_at: string;
   updated_at: string;
   id: string;

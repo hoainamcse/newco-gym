@@ -71,11 +71,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
     }
   };
 
-  // useEffect(() => {
-  //   if (mail) {
-  //     form.setValue('body', mail.response);
-  //   }
-  // }, [form, mail]);
+  const handleFillResponse = () => {
+    if (mail) {
+      form.setValue('body', mail.response);
+    }
+  }
 
   return (
     <div className="flex h-full flex-col">
@@ -234,41 +234,50 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           <div className="flex-1 whitespace-pre-wrap p-4 text-sm">{mail.content}</div>
           <Separator className="mt-auto" />
           <div className="p-4">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="grid gap-4">
-                  <FormField
-                    control={form.control}
-                    name="body"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea
-                            className="p-4 h-28"
-                            // placeholder={`Reply ${mail.name}...`}
-                            placeholder={`Reply ${mail.sender}...`}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex items-center">
-                    <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
-                      Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
-                    </Badge>
-                    {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
+            {mail.pending ? (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                  <div className="grid gap-4">
+                    <FormField
+                      control={form.control}
+                      name="body"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Textarea
+                              className="p-4 h-28"
+                              // placeholder={`Reply ${mail.name}...`}
+                              placeholder={`Reply ${mail.sender}...`}
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex items-center">
+                      <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
+                        Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
+                      </Badge>
+                      {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}
-                    <Button type="submit" size="sm" className="ml-auto">
-                      {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-                      Send
-                    </Button>
+                      <Button type="button" variant="secondary" size="sm" className="ml-auto" onClick={handleFillResponse}>
+                        Fill response
+                      </Button>
+                      <Button type="submit" size="sm" className="ml-2">
+                        {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                        Send
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </form>
-            </Form>
+                </form>
+              </Form>
+            ) : (
+              <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
+                Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
+              </Badge>
+            )}
           </div>
         </div>
       ) : (
