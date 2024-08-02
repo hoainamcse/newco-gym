@@ -256,9 +256,9 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                       )}
                     />
                     <div className="flex items-center">
-                      <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
+                      {/* <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
                         Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
-                      </Badge>
+                      </Badge> */}
                       {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}

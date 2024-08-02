@@ -24,7 +24,7 @@ export const AppProvider = ({ children }: any) => {
       setIsLoading(true);
       try {
         const { data } = await UserApi.me();
-        setUser(data.user_info);
+        setUser(data);
       } catch (err: any) {
         console.error(err);
       } finally {

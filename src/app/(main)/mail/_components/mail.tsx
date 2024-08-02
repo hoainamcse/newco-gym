@@ -54,7 +54,6 @@ export function Mail({
   defaultCollapsed = false,
   navCollapsedSize,
 }: MailProps) {
-  console.log('render')
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
   const [mail] = useMail();
 
@@ -242,7 +241,12 @@ export function Mail({
               </TabsList>
               <Tooltip>
                 <TooltipTrigger>
-                  <Button size="icon" variant="ghost" className='ml-2' onClick={() => router.push('/settings')}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="ml-2"
+                    onClick={() => router.push('/settings')}
+                  >
                     <Settings className="h-5 w-5" />
                   </Button>
                 </TooltipTrigger>
@@ -260,16 +264,27 @@ export function Mail({
                 </div>
               </form>
             </div> */}
-            <div className='p-2'></div>
+            <div className="p-2"></div>
             <TabsContent value="all" className="m-0">
-              {isLoading && <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />}
-              <MailList items={mails} />
+              {isLoading ? (
+                <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                <MailList items={mails} />
+              )}
             </TabsContent>
             <TabsContent value="read" className="m-0">
-              <MailList items={mails.filter((item) => !item.pending)} />
+              {isLoading ? (
+                <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                <MailList items={mails.filter((item) => !item.pending)} />
+              )}
             </TabsContent>
             <TabsContent value="unread" className="m-0">
-              <MailList items={mails.filter((item) => item.pending)} />
+              {isLoading ? (
+                <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                <MailList items={mails.filter((item) => item.pending)} />
+              )}
             </TabsContent>
           </Tabs>
         </ResizablePanel>

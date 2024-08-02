@@ -12,9 +12,9 @@ function Knowledge() {
           Insert your Google Drive link to import materials, documents to Gym Automation
         </p>
       </div>
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 lg:mt-16">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-6 mt-6 lg:mt-16">
         <ConnectDrive />
-        <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6 place-self-center">
+        {/* <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6 place-self-center">
           <Link2 className="w-16 h-16" strokeWidth="0.75" />
           <div className="relative w-full">
             <Input placeholder="Insert the website's URL" className="bg-white pr-8 rounded-none" />
@@ -23,8 +23,8 @@ function Knowledge() {
           <Button variant="outline" className="rounded-none">
             Import knowledge
           </Button>
-        </div>
-        <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6 place-self-center">
+        </div> */}
+        {/* <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 px-6 place-self-center">
           <Mail className="w-16 h-16" strokeWidth="0.75" />
           <div className="relative w-full">
             <Input placeholder="abc@gmail.com" className="bg-white pr-8 rounded-none" />
@@ -33,7 +33,7 @@ function Knowledge() {
           <Button variant="outline" className="rounded-none">
             Import knowledge
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
