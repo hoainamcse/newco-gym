@@ -1,4 +1,5 @@
 'use client';
+
 import Image from 'next/image';
 import { FaGoogle } from 'react-icons/fa';
 import AuthApi from '@/apis/auth';
@@ -33,7 +34,7 @@ export default function SignIn() {
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('access_token', access_token);
         localStorage.setItem('refresh_token', refresh_token);
-        router.push('/connectors');
+        window.location.href = '/connectors';
       }
     };
 

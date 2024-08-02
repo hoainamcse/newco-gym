@@ -22,9 +22,11 @@ import SettingsApi from '@/apis/settings';
 import { toast } from 'sonner';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipContent } from '@radix-ui/react-tooltip';
 
 function Settings() {
-  const [value, setValue] = useState<number[]>([]);
+  const [value, setValue] = useState<number>(0);
 
   const [setting, setSetting] = useState<DriveLink | null>(null);
 
@@ -36,7 +38,7 @@ function Settings() {
     try {
       const { data } = await SettingsApi.create({
         google_drive_url: setting?.google_drive_url,
-        confidence_threshold: value[0],
+        confidence_threshold: value,
       });
       setSetting(data.setting);
       toast(<span className="font-semibold text-teal-600">Update successful</span>);
@@ -52,7 +54,7 @@ function Settings() {
       const { data } = await SettingsApi.list();
       if (data.setting.length > 0) {
         setSetting(data.setting[0]);
-        setValue([data.setting[0].confidence_threshold]);
+        setValue(data.setting[0].confidence_threshold);
       }
     };
     loadSettings();
@@ -133,15 +135,15 @@ function Settings() {
               </div> */}
               <form className="space-y-4" onSubmit={onSubmit}>
                 <div className="grid gap-4">
-                  <Label htmlFor="value">Value</Label>
+                  <Label htmlFor="value">Value: {value}</Label>
                   <Slider
                     id="value"
                     name="value"
-                    value={value}
                     max={1}
                     step={0.1}
                     className="mt-2"
-                    onValueChange={setValue}
+                    value={[value]}
+                    onValueChange={(values) => setValue(values[0])}
                   />
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">

@@ -32,8 +32,7 @@ function Nav() {
     localStorage.removeItem('user');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    setUser(null);
-    router.push('/');
+    window.location.href = '/';
   }
 
   return (
