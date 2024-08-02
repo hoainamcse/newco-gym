@@ -140,7 +140,7 @@ function Settings() {
                     id="value"
                     name="value"
                     max={1}
-                    step={0.1}
+                    step={0.05}
                     className="mt-2"
                     value={[value]}
                     onValueChange={(values) => setValue(values[0])}

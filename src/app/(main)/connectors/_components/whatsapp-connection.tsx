@@ -97,7 +97,7 @@ export function WhatsappConnection() {
                   <div className="space-y-2">
                     <h4 className="font-medium leading-none">How to use chatbot?</h4>
                     <p className="text-sm text-muted-foreground">
-                      Contact this phone number to interact with Chatbot
+                      Authorize this phone number to interact with your AI Bot on WhatsApp
                     </p>
                   </div>
                   <div className="grid gap-2">
