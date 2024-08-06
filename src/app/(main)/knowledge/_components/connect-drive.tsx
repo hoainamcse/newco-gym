@@ -13,6 +13,7 @@ import SettingsApi from '@/apis/settings';
 import { toast } from 'sonner';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { DriveLink } from '@/types';
+import Image from 'next/image';
 
 const pattern = /^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+(\?.*)?$/;
 
@@ -71,56 +72,57 @@ export function ConnectDrive() {
   }, [form]);
 
   return (
-    <div className="w-[360px] h-[320px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center px-6 place-self-center">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='w-full flex flex-col justify-center items-center gap-6 '>
-          <Link2 className="w-16 h-16" strokeWidth="0.75" />
-          <FormField
-            control={form.control}
-            name="google_drive_url"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="relative">
-                    <Input
-                      placeholder="Insert the Google Drive's URL"
-                      className="bg-white pr-8 rounded-none"
-                      disabled={!!setting}
-                      {...field}
-                    />
-                    <Link className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+    <div className="w-fit min-w-[390px] place-self-center">
+      <div className="h-[390px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full flex flex-col justify-center items-center gap-6 "
+          >
+            <Image
+              width="80"
+              height="80"
+              src="https://img.icons8.com/color/480/google-drive--v1.png"
+              alt="google-drive--v1"
+            />
+            <FormField
+              control={form.control}
+              name="google_drive_url"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        placeholder="Insert the Google Drive's URL"
+                        className="bg-white pr-8"
+                        disabled={!!setting}
+                        {...field}
+                      />
+                      <Link className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {setting ? (
+              <Button variant="destructive" className="w-full" onClick={handleDelete} type="button">
+                {isLoading ? (
+                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Link2 className="h-4 w-4 mr-2" />
+                )}
+                Remove
+              </Button>
+            ) : (
+              <Button type="submit" className="bg-[#4CAF50] hover:bg-[#4CAF50] w-full">
+                {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                Import knowledge
+              </Button>
             )}
-          />
-          {setting ? (
-            <Button
-              variant="destructive"
-              className="rounded-none"
-              onClick={handleDelete}
-              type="button"
-            >
-              {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-              Remove
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              variant={
-                form.watch('google_drive_url') !== form.formState.defaultValues?.google_drive_url
-                  ? 'default'
-                  : 'outline'
-              }
-              className="rounded-none"
-            >
-              {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-              Import knowledge
-            </Button>
-          )}
-        </form>
-      </Form>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 }
