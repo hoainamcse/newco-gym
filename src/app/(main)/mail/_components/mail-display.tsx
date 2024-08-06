@@ -4,6 +4,7 @@ import { addDays, addHours, format, nextSaturday } from 'date-fns';
 import {
   Archive,
   ArchiveX,
+  ChevronLeft,
   Clock,
   Forward,
   MoreVertical,
@@ -34,6 +35,8 @@ import GmailApi from '@/apis/gmail';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useMail } from '../user-mail';
+import { useMediaQuery } from 'react-responsive';
 // import { Mail as Email } from '@/app/(main)/mail/data';
 
 interface MailDisplayProps {
@@ -47,6 +50,10 @@ const formSchema = z.object({
 });
 
 export function MailDisplay({ mail }: MailDisplayProps) {
+  const isDesktop = useMediaQuery({ minWidth: 768 });
+
+  const [_, setMail] = useMail();
+
   const today = new Date();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,7 +82,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
     if (mail) {
       form.setValue('body', mail.response);
     }
-  }
+  };
+
+  const handleBackClick = () => {
+    setMail({ selected: null });
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -205,6 +216,13 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       <Separator /> */}
       {mail ? (
         <div className="flex flex-1 flex-col">
+          {!isDesktop && (
+            <div className="p-4 gap-4">
+              <Button onClick={handleBackClick} variant="secondary" size="sm">
+                <ChevronLeft className='w-4 h-4 mr-2' /> Back
+              </Button>
+            </div>
+          )}
           <div className="flex items-start p-4">
             <div className="flex items-start gap-4 text-sm">
               <Avatar>
@@ -262,7 +280,13 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                       {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}
-                      <Button type="button" variant="secondary" size="sm" className="ml-auto" onClick={handleFillResponse}>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="ml-auto"
+                        onClick={handleFillResponse}
+                      >
                         Fill response
                       </Button>
                       <Button type="submit" size="sm" className="ml-2">

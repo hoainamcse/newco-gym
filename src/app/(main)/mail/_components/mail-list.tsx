@@ -16,9 +16,11 @@ export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
 
   return (
-    <ScrollArea className="h-screen">
+    <ScrollArea style={{ height: 'calc(100vh - 148px)'}}>
       <div className="flex flex-col gap-2 p-4 pt-0">
-        {!items.length && <p className="text-center font-medium text-sm">No email since account registration</p>}
+        {!items.length && (
+          <p className="text-center font-medium text-sm">No email since account registration</p>
+        )}
         {items.map((item) => (
           <button
             key={item.id}
@@ -39,15 +41,6 @@ export function MailList({ items }: MailListProps) {
                   {/* <div className="font-semibold">{item.name}</div> */}
                   <div className="font-semibold">{item.sender}</div>
                   {/* {!item.pending && <span className="flex h-2 w-2 rounded-full bg-blue-600" />} */}
-                  {item.labels.length ? (
-                    <div className="flex items-center gap-2">
-                      {item.labels.map((label) => (
-                        <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
-                          {label}
-                        </Badge>
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
                 <div
                   className={cn(
@@ -74,6 +67,15 @@ export function MailList({ items }: MailListProps) {
                 ))}
               </div>
             ) : null} */}
+            {item.labels.length ? (
+              <div className="flex items-center gap-2">
+                {item.labels.map((label) => (
+                  <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
+                    {label}
+                  </Badge>
+                ))}
+              </div>
+            ) : null}
           </button>
         ))}
       </div>

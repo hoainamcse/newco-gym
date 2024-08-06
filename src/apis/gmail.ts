@@ -7,11 +7,16 @@ const GmailApi = {
   sendEmail: (params: any) =>
     HTTPService.sendRequestWithToken('POST', '/v1/gmail/send-email', {}, params),
   pendingEmail: () => HTTPService.sendRequestWithToken('GET', '/v1/gmail/pending'),
+
   replyEmail: async (payload = {}) => {
     const data = await axiosClient.post('/v1/gmail/reply-email', payload);
     return data.data;
   },
-  getEmail: () => HTTPService.sendRequestWithToken('GET', '/v1/gmail'),
+
+  getEmail: async () => {
+    const data = await axiosClient.get('/v1/gmail');
+    return data.data;
+  }
 };
 
 export default GmailApi;
