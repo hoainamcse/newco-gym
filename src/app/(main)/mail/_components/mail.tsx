@@ -6,6 +6,7 @@ import {
   Archive,
   ArchiveX,
   File,
+  FolderSync,
   Inbox,
   MessagesSquare,
   Search,
@@ -35,6 +36,9 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useMediaQuery } from 'react-responsive';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { AppContext } from '@/context/App.context';
 
 interface MailProps {
   accounts: {
@@ -55,6 +59,8 @@ export function Mail({
   defaultCollapsed = false,
   navCollapsedSize,
 }: MailProps) {
+  const { user } = React.useContext(AppContext);
+
   const isDesktop = useMediaQuery({ minWidth: 768 });
 
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
@@ -63,11 +69,12 @@ export function Mail({
 
   const [mails, setMails] = React.useState<Email[]>([]);
 
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const router = useRouter();
 
-  const loadMails = async () => {
+  const handleSyncEmail = async () => {
+    setIsLoading(true);
     try {
       const { data } = await GmailApi.getEmail();
       setMails(
@@ -87,39 +94,28 @@ export function Mail({
   };
 
   React.useEffect(() => {
-    const interval = setInterval(() => {
-      loadMails();
-    }, 10000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  React.useEffect(() => {
-    const startWatchingMail = async () => {
-      try {
-        await GmailApi.startWatching();
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    startWatchingMail();
+    handleSyncEmail();
   }, []);
 
   const renderMain = () => (
     <Tabs defaultValue="all">
       <div className="flex items-center px-4 py-2">
-        <h1 className="text-xl font-bold">Inbox</h1>
-        <TabsList className="ml-auto">
-          <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
-            All
-          </TabsTrigger>
-          <TabsTrigger value="read" className="text-zinc-600 dark:text-zinc-200">
-            Auto Replied
-          </TabsTrigger>
-          <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
-            Cannot Reply
-          </TabsTrigger>
-        </TabsList>
+        <h1 className="text-xl font-bold mr-auto">Inbox</h1>
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="airplane-mode">Watching</Label>
+          <Switch id="airplane-mode" defaultChecked={!!user.last_history_id} />
+        </div>
+        <Separator orientation="vertical" className="h-5 ml-4" />
+        <Tooltip>
+          <TooltipTrigger>
+            <Button size="icon" variant="ghost" className="ml-2" onClick={handleSyncEmail}>
+              <FolderSync className="h-5 w-5" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Sync email</p>
+          </TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger>
             <Button
@@ -137,7 +133,17 @@ export function Mail({
         </Tooltip>
       </div>
       <Separator />
-      <div className="p-2"></div>
+      <TabsList className="m-4">
+        <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
+          All
+        </TabsTrigger>
+        <TabsTrigger value="read" className="text-zinc-600 dark:text-zinc-200">
+          Auto Replied
+        </TabsTrigger>
+        <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
+          Cannot Reply
+        </TabsTrigger>
+      </TabsList>
       <TabsContent value="all" className="m-0">
         {isLoading ? (
           <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
