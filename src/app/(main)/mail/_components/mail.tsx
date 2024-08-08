@@ -30,7 +30,7 @@ import { Nav } from '@/app/(main)/mail/_components/nav';
 import { type Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import GmailApi from '@/apis/gmail';
-import { Email } from '@/types';
+import { DriveLink, Email } from '@/types';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -39,6 +39,7 @@ import { useMediaQuery } from 'react-responsive';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { AppContext } from '@/context/App.context';
+import SettingsApi from '@/apis/settings';
 
 interface MailProps {
   accounts: {
@@ -69,6 +70,10 @@ export function Mail({
 
   const [mails, setMails] = React.useState<Email[]>([]);
 
+  const [setting, setSetting] = React.useState<DriveLink | null>(null);
+
+  const [checked, setChecked] = React.useState(false);
+
   const [isLoading, setIsLoading] = React.useState(false);
 
   const router = useRouter();
@@ -93,9 +98,35 @@ export function Mail({
     }
   };
 
-  // React.useEffect(() => {
-  //   handleSyncEmail();
-  // }, []);
+  const handleStartMail = async () => {
+    setChecked(!checked);
+    try {
+      const { data } = await SettingsApi.create({
+        ...setting,
+        auto_reply: !checked,
+      });
+      setSetting(data.setting);
+      toast(<span className="font-semibold text-teal-600">Update successful</span>);
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      setChecked(!checked);
+    }
+  };
+
+  React.useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const { data } = await SettingsApi.list();
+        if (data.setting.length > 0) {
+          setSetting(data.setting[0]);
+          setChecked(data.setting[0].auto_reply);
+        }
+      } catch (err: any) {
+        console.log(err.message);
+      }
+    };
+    loadSettings();
+  }, []);
 
   const renderMain = () => (
     <Tabs defaultValue="all">
@@ -106,6 +137,8 @@ export function Mail({
           <Switch
             id="airplane-mode"
             defaultChecked={!!user.last_history_id}
+            checked={checked}
+            onClick={handleStartMail}
           />
         </div>
         <Separator orientation="vertical" className="h-5 ml-4" />
