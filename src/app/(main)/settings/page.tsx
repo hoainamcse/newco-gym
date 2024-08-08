@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,20 +24,30 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Tooltip, TooltipTrigger } from '@/components/ui/tooltip';
 import { TooltipContent } from '@radix-ui/react-tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { AppContext } from '@/context/App.context';
+import GmailApi from '@/apis/gmail';
 
 function Settings() {
+  const { user } = useContext(AppContext);
+
+  const [checked, setChecked] = useState(!!user.last_history_id);
+
   const [value, setValue] = useState<number>(0);
 
   const [setting, setSetting] = useState<DriveLink | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const onSubmit = async (event: any) => {
     event.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
     try {
       const { data } = await SettingsApi.create({
-        google_drive_url: setting?.google_drive_url,
+        ...setting,
         confidence_threshold: value,
       });
       setSetting(data.setting);
@@ -45,16 +55,39 @@ function Settings() {
     } catch (err: any) {
       toast(<span className="font-semibold text-red-600">Error happen</span>);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
+    }
+  };
+
+  const handleStartMail = async () => {
+    setChecked(!checked);
+    try {
+      if (checked) {
+        await GmailApi.stopWatching();
+        toast(<span className="font-semibold text-teal-600">Stop successful</span>);
+      } else {
+        await GmailApi.startWatching();
+        toast(<span className="font-semibold text-teal-600">Start successful</span>);
+      }
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      setChecked(!checked);
     }
   };
 
   useEffect(() => {
     const loadSettings = async () => {
-      const { data } = await SettingsApi.list();
-      if (data.setting.length > 0) {
-        setSetting(data.setting[0]);
-        setValue(data.setting[0].confidence_threshold);
+      setIsLoading(true);
+      try {
+        const { data } = await SettingsApi.list();
+        if (data.setting.length > 0) {
+          setSetting(data.setting[0]);
+          setValue(data.setting[0].confidence_threshold);
+        }
+      } catch (err: any) {
+        console.log(err.message);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadSettings();
@@ -122,40 +155,56 @@ function Settings() {
               <Button>Save</Button>
             </CardFooter>
           </Card> */}
-          <Card className="w-full mx-auto p-6 sm:p-8">
+          <Card className="w-full mx-auto p-4">
             <CardHeader>
               <CardTitle>Adjust the Confidence Level</CardTitle>
               <CardDescription>
                 Use the slider to select a value within the specified range.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              {/* <div className="grid gap-4">
-                <Slider defaultValue={[0.8]} max={1} step={0.1} className="w-full" />
-              </div> */}
-              <form className="space-y-4" onSubmit={onSubmit}>
-                <div className="grid gap-4">
-                  <Label htmlFor="value">Value: {value}</Label>
-                  <Slider
-                    id="value"
-                    name="value"
-                    max={1}
-                    step={0.05}
-                    className="mt-2"
-                    value={[value]}
-                    onValueChange={(values) => setValue(values[0])}
-                  />
+            {isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+              </div>
+            ) : (
+              <CardContent>
+                <form className="space-y-4" onSubmit={onSubmit}>
+                  <div className="grid gap-4">
+                    <Label htmlFor="value">Value: {value}</Label>
+                    <Slider
+                      id="value"
+                      name="value"
+                      max={1}
+                      step={0.05}
+                      className="mt-2"
+                      value={[value]}
+                      onValueChange={(values) => setValue(values[0])}
+                    />
+                  </div>
+                  <div className="flex justify-between text-sm text-muted-foreground">
+                    <span>0</span>
+                    <span>1</span>
+                  </div>
+                  <Button type="submit" className="w-full">
+                    {loading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                    Submit
+                  </Button>
+                </form>
+              </CardContent>
+            )}
+          </Card>
+          <Card className="w-full mx-auto p-4">
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle>Adjust Mail Receiving Ability</CardTitle>
+                  <CardDescription className="mt-1.5">
+                    Use the switcher to start or stop receive email.
+                  </CardDescription>
                 </div>
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>0</span>
-                  <span>1</span>
-                </div>
-                <Button type="submit" className="w-full">
-                  {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-                  Submit
-                </Button>
-              </form>
-            </CardContent>
+                <Switch checked={checked} onClick={handleStartMail} />
+              </div>
+            </CardHeader>
           </Card>
         </div>
       </div>

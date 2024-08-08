@@ -93,17 +93,20 @@ export function Mail({
     }
   };
 
-  React.useEffect(() => {
-    handleSyncEmail();
-  }, []);
+  // React.useEffect(() => {
+  //   handleSyncEmail();
+  // }, []);
 
   const renderMain = () => (
     <Tabs defaultValue="all">
       <div className="flex items-center px-4 py-2">
         <h1 className="text-xl font-bold mr-auto">Inbox</h1>
         <div className="flex items-center space-x-2">
-          <Label htmlFor="airplane-mode">Watching</Label>
-          <Switch id="airplane-mode" defaultChecked={!!user.last_history_id} />
+          <Label htmlFor="airplane-mode">Auto-reply</Label>
+          <Switch
+            id="airplane-mode"
+            defaultChecked={!!user.last_history_id}
+          />
         </div>
         <Separator orientation="vertical" className="h-5 ml-4" />
         <Tooltip>

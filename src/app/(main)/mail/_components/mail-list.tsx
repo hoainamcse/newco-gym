@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
+import { FolderSync } from 'lucide-react';
 
 interface MailListProps {
   items: Mail[];
@@ -19,7 +20,7 @@ export function MailList({ items }: MailListProps) {
     <ScrollArea style={{ height: 'calc(100vh - 148px)'}}>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {!items.length && (
-          <p className="text-center font-medium text-sm">No email since account registration</p>
+          <div className="text-center font-medium text-sm">No email since account registration. Please click <span><FolderSync /></span> button to sync email.</div>
         )}
         {items.map((item) => (
           <button
