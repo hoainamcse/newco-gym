@@ -17,10 +17,12 @@ export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
 
   return (
-    <ScrollArea style={{ height: 'calc(100vh - 148px)'}}>
+    <ScrollArea style={{ height: 'calc(100vh - 148px)' }}>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {!items.length && (
-          <div className="text-center font-medium text-sm">No email since account registration. Please click <span><FolderSync /></span> button to sync email.</div>
+          <div className="font-medium text-sm flex gap-2 justify-center items-center">
+            Please click <FolderSync className="w-4 h-4" /> button to sync email.
+          </div>
         )}
         {items.map((item) => (
           <button

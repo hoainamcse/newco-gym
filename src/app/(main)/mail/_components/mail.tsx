@@ -8,6 +8,7 @@ import {
   File,
   FolderSync,
   Inbox,
+  Info,
   MessagesSquare,
   Search,
   Send,
@@ -40,7 +41,20 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { AppContext } from '@/context/App.context';
 import SettingsApi from '@/apis/settings';
+import Link from 'next/link';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
+const Loader = () => {
+  return (
+    <div className="flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent m-4">
+      <Skeleton className="h-4 w-2/5" />
+      <Skeleton className="h-4 w-3/5" />
+      <Skeleton className="h-4 w-full" />
+    </div>
+  );
+};
 interface MailProps {
   accounts: {
     label: string;
@@ -75,6 +89,7 @@ export function Mail({
   const [checked, setChecked] = React.useState(false);
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading1, setIsLoading1] = React.useState(false);
 
   const router = useRouter();
 
@@ -180,26 +195,32 @@ export function Mail({
           Cannot Reply
         </TabsTrigger>
       </TabsList>
+      {!user.last_history_id && (
+        <Alert className='mx-4 mb-4'>
+          <Info className="h-4 w-4" />
+          <AlertTitle>Heads up!</AlertTitle>
+          <AlertDescription>
+            You should{' '}
+            <Link href="/settings" className="underline underline-offset-4">
+              turn on email
+            </Link>{' '}
+            to continue receiving more new emails.
+          </AlertDescription>
+        </Alert>
+      )}
+      {isLoading && (
+        <>
+          <Loader /> <Loader />
+        </>
+      )}
       <TabsContent value="all" className="m-0">
-        {isLoading ? (
-          <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
-        ) : (
-          <MailList items={mails} />
-        )}
+        <MailList items={mails} />
       </TabsContent>
       <TabsContent value="read" className="m-0">
-        {isLoading ? (
-          <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
-        ) : (
-          <MailList items={mails.filter((item) => !item.pending)} />
-        )}
+        <MailList items={mails.filter((item) => !item.pending)} />
       </TabsContent>
       <TabsContent value="unread" className="m-0">
-        {isLoading ? (
-          <ReloadIcon className="mx-auto h-4 w-4 animate-spin" />
-        ) : (
-          <MailList items={mails.filter((item) => item.pending)} />
-        )}
+        <MailList items={mails.filter((item) => item.pending)} />
       </TabsContent>
     </Tabs>
   );
