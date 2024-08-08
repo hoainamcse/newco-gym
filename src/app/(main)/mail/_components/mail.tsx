@@ -196,17 +196,19 @@ export function Mail({
         </TabsTrigger>
       </TabsList>
       {!user.last_history_id && (
-        <Alert className='mx-4 mb-4'>
-          <Info className="h-4 w-4" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>
-            You should{' '}
-            <Link href="/settings" className="underline underline-offset-4">
-              turn on email
-            </Link>{' '}
-            to continue receiving more new emails.
-          </AlertDescription>
-        </Alert>
+        <div className='p-4 mb-4'>
+          <Alert>
+            <Info className="h-4 w-4" />
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
+              You should{' '}
+              <Link href="/settings" className="underline underline-offset-4">
+                turn on email
+              </Link>{' '}
+              to continue receiving more new emails.
+            </AlertDescription>
+          </Alert>
+        </div>
       )}
       {isLoading && (
         <>
