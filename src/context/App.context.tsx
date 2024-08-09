@@ -19,13 +19,12 @@ export const AppContext = createContext<IAppContext>({
 export const AppProvider = ({ children }: any) => {
   const {
     data: user,
-    isLoading: loading,
+    isLoading,
     mutate,
-    isValidating,
   } = useSWR('USER', () => UserApi.me().then((res) => res.data));
 
   return (
-    <AppContext.Provider value={{ user, setUser: mutate, isLoading: loading || isValidating }}>
+    <AppContext.Provider value={{ user, setUser: mutate, isLoading }}>
       {children}
     </AppContext.Provider>
   );

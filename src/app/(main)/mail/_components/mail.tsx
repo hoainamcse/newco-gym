@@ -133,14 +133,16 @@ export function Mail({
 
   React.useEffect(() => {
     const fetchEmails = async () => {
-      if (isFetching || !user.last_history_id) return;
+      if (isFetching) return;
       handleGetEmails();
     };
 
     fetchEmails();
 
     const intervalId = setInterval(() => {
-      fetchEmails();
+      if (user?.last_history_id) {
+        fetchEmails();
+      }
     }, 20000);
 
     return () => clearInterval(intervalId);
@@ -199,16 +201,16 @@ export function Mail({
         </TabsTrigger>
       </TabsList>
       {!user.last_history_id && (
-        <div className="p-4 mb-4">
+        <div className="p-4">
           <Alert variant="destructive">
             <Info className="h-4 w-4" />
             <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               You should{' '}
               <Link href="/settings" className="underline underline-offset-4 font-medium">
-                turn on email
+                enable watching
               </Link>{' '}
-              to continue receiving more new emails.
+              to continue receiving upcoming emails.
             </AlertDescription>
           </Alert>
         </div>
