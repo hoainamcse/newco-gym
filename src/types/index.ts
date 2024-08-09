@@ -14,7 +14,8 @@ export interface Email {
   labels: string[];
 }
 
-export interface DriveLink {
+export interface Setting {
+  auto_reply: boolean;
   confidence_threshold: number;
   created_at: string;
   updated_at: string;

@@ -4,6 +4,7 @@ import './globals.css';
 import { Suspense } from 'react';
 import { AppProvider } from '@/context/App.context';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import SWRProvider from '@/context/swr-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AppProvider>
-          <TooltipProvider delayDuration={0}>
-            <Suspense>{children}</Suspense>
-          </TooltipProvider>
-        </AppProvider>
+        <SWRProvider>
+          <AppProvider>
+            <TooltipProvider delayDuration={0}>
+              <Suspense>{children}</Suspense>
+            </TooltipProvider>
+          </AppProvider>
+        </SWRProvider>
       </body>
     </html>
   );

@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { DriveLink } from '@/types';
+import { Setting } from '@/types';
 import SettingsApi from '@/apis/settings';
 import { toast } from 'sonner';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -36,7 +36,7 @@ function Settings() {
 
   const [value, setValue] = useState<number>(0);
 
-  const [setting, setSetting] = useState<DriveLink | null>(null);
+  const [setting, setSetting] = useState<Setting | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,9 +51,9 @@ function Settings() {
         confidence_threshold: value,
       });
       setSetting(data.setting);
-      toast(<span className="font-semibold text-teal-600">Update successful</span>);
+      toast(<span className="font-semibold text-teal-600">Confidence level updated</span>);
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setLoading(false);
     }
@@ -70,7 +70,7 @@ function Settings() {
         toast(<span className="font-semibold text-teal-600">Start successful</span>);
       }
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
       setChecked(!checked);
     }
   };

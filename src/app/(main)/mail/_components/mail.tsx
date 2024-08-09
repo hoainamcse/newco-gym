@@ -31,7 +31,7 @@ import { Nav } from '@/app/(main)/mail/_components/nav';
 import { type Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import GmailApi from '@/apis/gmail';
-import { DriveLink, Email } from '@/types';
+import { Setting, Email } from '@/types';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -45,6 +45,7 @@ import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import useSWR from 'swr';
 
 const Loader = () => {
   return (
@@ -84,17 +85,18 @@ export function Mail({
 
   const [mails, setMails] = React.useState<Email[]>([]);
 
-  const [setting, setSetting] = React.useState<DriveLink | null>(null);
+  const [isFetching, setIsFetching] = React.useState(false);
 
-  const [checked, setChecked] = React.useState(false);
+  const { data: setting, mutate } = useSWR('SETTING', () =>
+    SettingsApi.list().then((res) => res.data.setting[0])
+  );
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isLoading1, setIsLoading1] = React.useState(false);
 
   const router = useRouter();
 
-  const handleSyncEmail = async () => {
-    setIsLoading(true);
+  const handleGetEmails = React.useCallback(async () => {
+    setIsFetching(true);
     try {
       const { data } = await GmailApi.getEmail();
       setMails(
@@ -106,42 +108,42 @@ export function Mail({
           }))
           .sort((a: Email, b: Email) => new Date(b.date).valueOf() - new Date(a.date).valueOf())
       );
-    } catch (err) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStartMail = async () => {
-    setChecked(!checked);
-    try {
-      const { data } = await SettingsApi.create({
-        ...setting,
-        auto_reply: !checked,
-      });
-      setSetting(data.setting);
-      toast(<span className="font-semibold text-teal-600">Update successful</span>);
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
-      setChecked(!checked);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
+    } finally {
+      setIsFetching(false);
+    }
+  }, []);
+
+  const handleChangeAutoReply = async () => {
+    const payload = { ...setting, auto_reply: !setting?.auto_reply };
+    try {
+      await SettingsApi.create(payload);
+      mutate(payload as Setting);
+      toast(
+        <span className="font-semibold text-teal-600">
+          Auto-reply is {!setting?.auto_reply ? 'enabled' : 'turned off'}
+        </span>
+      );
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     }
   };
 
   React.useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const { data } = await SettingsApi.list();
-        if (data.setting.length > 0) {
-          setSetting(data.setting[0]);
-          setChecked(data.setting[0].auto_reply);
-        }
-      } catch (err: any) {
-        console.log(err.message);
-      }
+    const fetchEmails = async () => {
+      if (isFetching || !user.last_history_id) return;
+      handleGetEmails();
     };
-    loadSettings();
-  }, []);
+
+    fetchEmails();
+
+    const intervalId = setInterval(() => {
+      fetchEmails();
+    }, 20000);
+
+    return () => clearInterval(intervalId);
+  }, [isFetching, handleGetEmails, user.last_history_id]);
 
   const renderMain = () => (
     <Tabs defaultValue="all">
@@ -151,13 +153,13 @@ export function Mail({
           <Label htmlFor="airplane-mode">Auto-reply</Label>
           <Switch
             id="airplane-mode"
-            defaultChecked={!!user.last_history_id}
-            checked={checked}
-            onClick={handleStartMail}
+            defaultChecked={setting?.auto_reply}
+            checked={setting?.auto_reply}
+            onClick={handleChangeAutoReply}
           />
         </div>
         <Separator orientation="vertical" className="h-5 ml-4" />
-        <Tooltip>
+        {/* <Tooltip>
           <TooltipTrigger>
             <Button size="icon" variant="ghost" className="ml-2" onClick={handleSyncEmail}>
               <FolderSync className="h-5 w-5" />
@@ -166,7 +168,7 @@ export function Mail({
           <TooltipContent>
             <p>Sync email</p>
           </TooltipContent>
-        </Tooltip>
+        </Tooltip> */}
         <Tooltip>
           <TooltipTrigger>
             <Button
@@ -196,13 +198,13 @@ export function Mail({
         </TabsTrigger>
       </TabsList>
       {!user.last_history_id && (
-        <div className='p-4 mb-4'>
-          <Alert>
+        <div className="p-4 mb-4">
+          <Alert variant="destructive">
             <Info className="h-4 w-4" />
-            <AlertTitle>Heads up!</AlertTitle>
+            <AlertTitle>Warning!</AlertTitle>
             <AlertDescription>
               You should{' '}
-              <Link href="/settings" className="underline underline-offset-4">
+              <Link href="/settings" className="underline underline-offset-4 font-medium">
                 turn on email
               </Link>{' '}
               to continue receiving more new emails.
@@ -210,20 +212,23 @@ export function Mail({
           </Alert>
         </div>
       )}
-      {isLoading && (
+      {isFetching && mails.length === 0 ? (
         <>
           <Loader /> <Loader />
         </>
+      ) : (
+        <>
+          <TabsContent value="all" className="m-0">
+            <MailList items={mails} />
+          </TabsContent>
+          <TabsContent value="read" className="m-0">
+            <MailList items={mails?.filter((item) => !item.pending)} />
+          </TabsContent>
+          <TabsContent value="unread" className="m-0">
+            <MailList items={mails?.filter((item) => item.pending)} />
+          </TabsContent>
+        </>
       )}
-      <TabsContent value="all" className="m-0">
-        <MailList items={mails} />
-      </TabsContent>
-      <TabsContent value="read" className="m-0">
-        <MailList items={mails.filter((item) => !item.pending)} />
-      </TabsContent>
-      <TabsContent value="unread" className="m-0">
-        <MailList items={mails.filter((item) => item.pending)} />
-      </TabsContent>
     </Tabs>
   );
 

@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import SettingsApi from '@/apis/settings';
 import { toast } from 'sonner';
 import { ReloadIcon } from '@radix-ui/react-icons';
-import { DriveLink } from '@/types';
+import { Setting } from '@/types';
 import Image from 'next/image';
 
 const pattern = /^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+(\?.*)?$/;
@@ -29,7 +29,7 @@ export function ConnectDrive() {
     },
   });
 
-  const [setting, setSetting] = useState<DriveLink | null>(null);
+  const [setting, setSetting] = useState<Setting | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 

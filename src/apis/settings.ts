@@ -1,8 +1,13 @@
-import axiosClient from '@/lib/axios';
+import axiosClient, { type ApiResponse } from '@/lib/axios';
+import type { Setting } from '@/types';
+
+interface SettingResponse {
+  setting: Setting[];
+}
 
 const SettingsApi = {
   list: async () => {
-    const data = await axiosClient.get('/v1/settings/');
+    const data = await axiosClient.get<ApiResponse<SettingResponse>>('/v1/settings/');
     return data.data;
   },
   create: async (payload = {}) => {

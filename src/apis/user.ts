@@ -1,8 +1,8 @@
-import axiosClient from '@/lib/axios';
+import axiosClient, { ApiResponse } from '@/lib/axios';
 
 const UserApi = {
   me: async () => {
-    const data = await axiosClient.get('/v1/users/me');
+    const data = await axiosClient.get<ApiResponse>('/v1/users/me');
     return data.data;
   },
 };

@@ -2,6 +2,7 @@
 
 import UserApi from '@/apis/user';
 import { createContext, useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 interface IAppContext {
   user: any;
@@ -16,26 +17,15 @@ export const AppContext = createContext<IAppContext>({
 });
 
 export const AppProvider = ({ children }: any) => {
-  const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const run = async () => {
-      setIsLoading(true);
-      try {
-        const { data } = await UserApi.me();
-        setUser(data);
-      } catch (err: any) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    run();
-  }, []);
+  const {
+    data: user,
+    isLoading: loading,
+    mutate,
+    isValidating,
+  } = useSWR('USER', () => UserApi.me().then((res) => res.data));
 
   return (
-    <AppContext.Provider value={{ user, setUser, isLoading }}>
+    <AppContext.Provider value={{ user, setUser: mutate, isLoading: loading || isValidating }}>
       {children}
     </AppContext.Provider>
   );
