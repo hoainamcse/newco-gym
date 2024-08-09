@@ -126,7 +126,8 @@ export function Mail({
         </span>
       );
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">{err.message}</span>);
+      console.error('Error fetching emails:', err.message);
+      // toast(<span className="font-semibold text-red-600">{err.message}</span>);
     }
   };
 
