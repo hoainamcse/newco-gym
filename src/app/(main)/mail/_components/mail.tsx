@@ -91,8 +91,6 @@ export function Mail({
     SettingsApi.list().then((res) => res.data.setting[0])
   );
 
-  const [isLoading, setIsLoading] = React.useState(false);
-
   const router = useRouter();
 
   const handleGetEmails = React.useCallback(async () => {
@@ -109,7 +107,8 @@ export function Mail({
           .sort((a: Email, b: Email) => new Date(b.date).valueOf() - new Date(a.date).valueOf())
       );
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">{err.message}</span>);
+      console.error('Error fetching emails:', err.message);
+      // toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setIsFetching(false);
     }
@@ -126,8 +125,8 @@ export function Mail({
         </span>
       );
     } catch (err: any) {
-      console.error('Error fetching emails:', err.message);
-      // toast(<span className="font-semibold text-red-600">{err.message}</span>);
+      // console.error('Error fetching emails:', err.message);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     }
   };
 
