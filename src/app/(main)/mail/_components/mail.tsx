@@ -87,6 +87,8 @@ export function Mail({
 
   const [isFetching, setIsFetching] = React.useState(false);
 
+  const [error, setError] = React.useState(false);
+
   const { data: setting, mutate } = useSWR('SETTING', () =>
     SettingsApi.list().then((res) => res.data.setting[0])
   );
@@ -95,6 +97,7 @@ export function Mail({
 
   const handleGetEmails = React.useCallback(async () => {
     setIsFetching(true);
+    setError(false);
     try {
       const { data } = await GmailApi.getEmail();
       setMails(
@@ -108,6 +111,7 @@ export function Mail({
       );
     } catch (err: any) {
       console.error('Error fetching emails:', err.message);
+      setError(true);
       // toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setIsFetching(false);
@@ -132,10 +136,12 @@ export function Mail({
 
   React.useEffect(() => {
     const fetchEmails = async () => {
-      if (isFetching) return;
+      if (isFetching || error) return; // Prevent new call if one is in progress or if there is an error
+
       handleGetEmails();
     };
 
+    // Call fetchEmails immediately on first load
     fetchEmails();
 
     const intervalId = setInterval(() => {
@@ -144,8 +150,14 @@ export function Mail({
       }
     }, 20000);
 
-    return () => clearInterval(intervalId);
-  }, [isFetching, handleGetEmails, user.last_history_id]);
+    return () => clearInterval(intervalId); // Cleanup on component unmount
+  }, [isFetching, error]);
+
+  const handleRetry = () => {
+    setError(false); // Reset error state
+    setMails([]); // Clear any previous data
+    setIsFetching(false); // Allow fetching again
+  };
 
   const renderMain = () => (
     <Tabs defaultValue="all">
@@ -214,10 +226,15 @@ export function Mail({
           </Alert>
         </div>
       )}
-      {isFetching && mails.length === 0 ? (
+      {isFetching && mails.length === 0 && !error ? (
         <>
           <Loader /> <Loader />
         </>
+      ) : error ? (
+        <div>
+          <p>Error fetching emails. Please try again.</p>
+          <Button onClick={handleRetry}>Retry</Button>
+        </div>
       ) : (
         <>
           <TabsContent value="all" className="m-0">
