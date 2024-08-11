@@ -66,7 +66,7 @@ export function Backup({
   const loadMails = async () => {
     // setIsLoading(true);
     try {
-      const { data } = await GmailApi.getEmail();
+      const { data } = await GmailApi.getEmails();
       setMails(
         data
           .map((item: any, index: number) => ({

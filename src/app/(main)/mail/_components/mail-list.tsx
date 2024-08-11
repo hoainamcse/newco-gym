@@ -17,7 +17,7 @@ export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
 
   return (
-    <ScrollArea style={{ height: 'calc(100vh - 148px)' }}>
+    <ScrollArea style={{ height: 'calc(100vh - 200px)' }}>
       <div className="flex flex-col gap-2 p-4 pt-0">
         {!items.length && (
           <div className="font-medium text-sm flex gap-2 justify-center items-center">
@@ -71,15 +71,13 @@ export function MailList({ items }: MailListProps) {
                 ))}
               </div>
             ) : null} */}
-            {item.labels.length ? (
-              <div className="flex items-center gap-2">
-                {item.labels.map((label) => (
-                  <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
-                    {label}
-                  </Badge>
-                ))}
-              </div>
-            ) : null}
+            <div className="flex items-center gap-2">
+              {[item.pending ? 'Cannot Reply' : 'Auto Replied'].map((label) => (
+                <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
+                  {label}
+                </Badge>
+              ))}
+            </div>
           </button>
         ))}
       </div>

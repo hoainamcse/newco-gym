@@ -228,7 +228,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
               <Avatar>
                 <AvatarImage alt={mail.name} />
                 <AvatarFallback>
-                  {mail.name
+                  {mail.sender
                     .split(' ')
                     .map((chunk) => chunk[0])
                     .join('')}
@@ -264,7 +264,6 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                           <FormControl>
                             <Textarea
                               className="p-4 h-28"
-                              // placeholder={`Reply ${mail.name}...`}
                               placeholder={`Reply ${mail.sender}...`}
                               {...field}
                             />
@@ -274,9 +273,6 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                       )}
                     />
                     <div className="flex items-center">
-                      {/* <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
-                        Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
-                      </Badge> */}
                       {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}
@@ -298,7 +294,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                 </form>
               </Form>
             ) : (
-              <Badge className={cn(getBadgeVariantFromLabel(mail.labels[0]))}>
+              <Badge className={cn(getBadgeVariantFromLabel(mail.pending ? 'Cannot Reply' : 'Auto Replied'))}>
                 Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
               </Badge>
             )}

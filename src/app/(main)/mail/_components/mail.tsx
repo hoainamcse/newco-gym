@@ -87,19 +87,25 @@ export function Mail({
 
   const [isFetching, setIsFetching] = React.useState(false);
 
-  const [error, setError] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
 
   const { data: setting, mutate } = useSWR('SETTING', () =>
     SettingsApi.list().then((res) => res.data.setting[0])
   );
 
+  const {
+    data: emails,
+    isLoading,
+    error,
+  } = useSWR('LIST-EMAIL', () => GmailApi.getEmails().then((res) => res.data));
+
   const router = useRouter();
 
   const handleGetEmails = React.useCallback(async () => {
     setIsFetching(true);
-    setError(false);
+    setIsError(false);
     try {
-      const { data } = await GmailApi.getEmail();
+      const { data } = await GmailApi.getEmails();
       setMails(
         data
           .map((item: any, index: number) => ({
@@ -111,7 +117,7 @@ export function Mail({
       );
     } catch (err: any) {
       console.error('Error fetching emails:', err.message);
-      setError(true);
+      setIsError(true);
       // toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setIsFetching(false);
@@ -134,27 +140,25 @@ export function Mail({
     }
   };
 
-  React.useEffect(() => {
-    const fetchEmails = async () => {
-      if (isFetching || error) return; // Prevent new call if one is in progress or if there is an error
+  // React.useEffect(() => {
+  //   const fetchEmails = async () => {
+  //     if (isFetching || isError) return;
+  //     handleGetEmails();
+  //   };
 
-      handleGetEmails();
-    };
+  //   fetchEmails();
 
-    // Call fetchEmails immediately on first load
-    fetchEmails();
+  //   const intervalId = setInterval(() => {
+  //     if (user?.last_history_id) {
+  //       fetchEmails();
+  //     }
+  //   }, 20000);
 
-    const intervalId = setInterval(() => {
-      if (user?.last_history_id) {
-        fetchEmails();
-      }
-    }, 20000);
-
-    return () => clearInterval(intervalId); // Cleanup on component unmount
-  }, [isFetching, error]);
+  //   return () => clearInterval(intervalId);
+  // }, [isFetching, isError]);
 
   const handleRetry = () => {
-    setError(false); // Reset error state
+    setIsError(false); // Reset error state
     setMails([]); // Clear any previous data
     setIsFetching(false); // Allow fetching again
   };
@@ -173,16 +177,6 @@ export function Mail({
           />
         </div>
         <Separator orientation="vertical" className="h-5 ml-4" />
-        {/* <Tooltip>
-          <TooltipTrigger>
-            <Button size="icon" variant="ghost" className="ml-2" onClick={handleSyncEmail}>
-              <FolderSync className="h-5 w-5" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Sync email</p>
-          </TooltipContent>
-        </Tooltip> */}
         <Tooltip>
           <TooltipTrigger>
             <Button
@@ -212,7 +206,7 @@ export function Mail({
         </TabsTrigger>
       </TabsList>
       {!user.last_history_id && (
-        <div className="p-4">
+        <div className="px-4 pb-4">
           <Alert variant="destructive">
             <Info className="h-4 w-4" />
             <AlertTitle>Warning!</AlertTitle>
@@ -226,25 +220,35 @@ export function Mail({
           </Alert>
         </div>
       )}
-      {isFetching && mails.length === 0 && !error ? (
+      {isLoading && (
         <>
           <Loader /> <Loader />
         </>
-      ) : error ? (
-        <div>
-          <p>Error fetching emails. Please try again.</p>
-          <Button onClick={handleRetry}>Retry</Button>
+      )}
+      {!error && (
+        <div className="px-4 pb-4">
+          <Alert variant="destructive">
+            <Info className="h-4 w-4" />
+            <AlertTitle>Error!</AlertTitle>
+            <AlertDescription>
+              Error fetching emails. Please{' '}
+              <Link href="/settings" className="underline underline-offset-4 font-medium">
+                try again.
+              </Link>
+            </AlertDescription>
+          </Alert>
         </div>
-      ) : (
+      )}
+      {emails && (
         <>
           <TabsContent value="all" className="m-0">
-            <MailList items={mails} />
+            <MailList items={emails} />
           </TabsContent>
           <TabsContent value="read" className="m-0">
-            <MailList items={mails?.filter((item) => !item.pending)} />
+            <MailList items={emails.filter((item) => !item.pending)} />
           </TabsContent>
           <TabsContent value="unread" className="m-0">
-            <MailList items={mails?.filter((item) => item.pending)} />
+            <MailList items={emails.filter((item) => item.pending)} />
           </TabsContent>
         </>
       )}
@@ -265,13 +269,13 @@ export function Mail({
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={defaultLayout[2]}>
-            <MailDisplay mail={mails.find((item) => item.id === mail.selected) || null} />
+            <MailDisplay mail={emails?.find((item) => item.id === mail.selected) || null} />
           </ResizablePanel>
         </ResizablePanelGroup>
       ) : (
         <>
           {mail.selected ? (
-            <MailDisplay mail={mails.find((item) => item.id === mail.selected) || null} />
+            <MailDisplay mail={emails?.find((item) => item.id === mail.selected) || null} />
           ) : (
             renderMain()
           )}
