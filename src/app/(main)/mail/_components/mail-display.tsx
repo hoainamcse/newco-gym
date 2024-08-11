@@ -37,6 +37,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useMail } from '../user-mail';
 import { useMediaQuery } from 'react-responsive';
+import useMailFilter from '@/hooks/use-mail-filter';
 // import { Mail as Email } from '@/app/(main)/mail/data';
 
 interface MailDisplayProps {
@@ -54,7 +55,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
 
   const [_, setMail] = useMail();
 
-  const today = new Date();
+  const { getLabel } = useMailFilter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -282,30 +283,16 @@ export function MailDisplay({ mail }: MailDisplayProps) {
                     {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}
-                    {!mail.pending ? (
-                      <Badge
-                        className={cn(
-                          getBadgeVariantFromLabel(mail.pending ? 'Cannot Reply' : 'Auto Replied')
-                        )}
-                      >
+                    {getLabel(mail) !== 'cannot reply' && (
+                      <Badge className={cn(getBadgeVariantFromLabel(getLabel(mail)))}>
                         Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
                       </Badge>
-                    ) : (
-                      <>
-                        {/* <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          className="ml-auto"
-                          onClick={handleFillResponse}
-                        >
-                          Fill response
-                        </Button> */}
-                        <Button type="submit" size="sm" className="ml-auto">
-                          {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-                          Send
-                        </Button>
-                      </>
+                    )}
+                    {getLabel(mail) !== 'auto replied' && (
+                      <Button type="submit" size="sm" className="ml-auto">
+                        {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                        Send
+                      </Button>
                     )}
                   </div>
                 </div>
@@ -321,13 +308,13 @@ export function MailDisplay({ mail }: MailDisplayProps) {
 }
 
 function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['className'] {
-  if (['auto replied'].includes(label.toLowerCase())) {
-    return 'bg-blue-500';
+  if (['auto replied', 'manual reply'].includes(label.toLowerCase())) {
+    return 'bg-teal-500';
   }
 
   if (['cannot reply'].includes(label.toLowerCase())) {
-    return 'bg-red-500';
+    return 'bg-orange-500';
   }
 
-  return 'secondary';
+  return 'bg-yellow-500';
 }

@@ -9,6 +9,7 @@ import { Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import { FolderSync } from 'lucide-react';
 import type { Email } from '@/types';
+import useMailFilter from '@/hooks/use-mail-filter';
 
 interface MailListProps {
   items: Email[];
@@ -16,6 +17,8 @@ interface MailListProps {
 
 export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
+
+  const { getLabels } = useMailFilter();
 
   return (
     <ScrollArea style={{ height: 'calc(100vh - 200px)' }}>
@@ -73,7 +76,7 @@ export function MailList({ items }: MailListProps) {
               </div>
             ) : null} */}
             <div className="flex items-center gap-2">
-              {[item.pending ? 'Cannot Reply' : 'Auto Replied'].map((label) => (
+              {getLabels(item).map((label) => (
                 <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
                   {label}
                 </Badge>

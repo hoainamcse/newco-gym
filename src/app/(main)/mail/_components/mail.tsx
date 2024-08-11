@@ -42,6 +42,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import useSWR from 'swr';
 import { AutoReply } from './auto-reply';
+import useMailFilter from '@/hooks/use-mail-filter';
 
 const Loader = () => {
   return (
@@ -80,6 +81,8 @@ export function Mail({
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
 
   const [mail] = useMail();
+
+  const { getMails } = useMailFilter();
 
   const {
     data: emails,
@@ -199,10 +202,10 @@ export function Mail({
             <MailList items={merge(polling ?? [], emails)} />
           </TabsContent>
           <TabsContent value="read" className="m-0">
-            <MailList items={merge(polling ?? [], emails).filter((item) => !item.pending)} />
+            <MailList items={getMails(merge(polling ?? [], emails), 'auto replied')} />
           </TabsContent>
           <TabsContent value="unread" className="m-0">
-            <MailList items={merge(polling ?? [], emails).filter((item) => item.pending)} />
+            <MailList items={getMails(merge(polling ?? [], emails), 'cannot reply')} />
           </TabsContent>
         </>
       )}
