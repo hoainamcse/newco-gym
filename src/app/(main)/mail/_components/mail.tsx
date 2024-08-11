@@ -31,21 +31,17 @@ import { Nav } from '@/app/(main)/mail/_components/nav';
 import { type Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import GmailApi from '@/apis/gmail';
-import { Setting, Email } from '@/types';
-import { ReloadIcon } from '@radix-ui/react-icons';
-import { toast } from 'sonner';
+import { Email } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useMediaQuery } from 'react-responsive';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { AppContext } from '@/context/App.context';
-import SettingsApi from '@/apis/settings';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import useSWR from 'swr';
+import { AutoReply } from './auto-reply';
 
 const Loader = () => {
   return (
@@ -85,14 +81,6 @@ export function Mail({
 
   const [mail] = useMail();
 
-  const [mails, setMails] = React.useState<Email[]>([]);
-
-  const [isFetching, setIsFetching] = React.useState(false);
-
-  const { data: setting, mutate } = useSWR('SETTING', () =>
-    SettingsApi.list().then((res) => res.data.setting[0])
-  );
-
   const {
     data: emails,
     isLoading,
@@ -114,43 +102,6 @@ export function Mail({
   );
 
   const router = useRouter();
-
-  const handleGetEmails = React.useCallback(async () => {
-    setIsFetching(true);
-    try {
-      const { data } = await GmailApi.getEmails();
-      setMails(
-        data
-          .map((item: any, index: number) => ({
-            ...item,
-            labels: [item.pending ? 'Cannot Reply' : 'Auto Replied'],
-            name: `Sender ${index}`,
-          }))
-          .sort((a: Email, b: Email) => new Date(b.date).valueOf() - new Date(a.date).valueOf())
-      );
-    } catch (err: any) {
-      console.error('Error fetching emails:', err.message);
-      // toast(<span className="font-semibold text-red-600">{err.message}</span>);
-    } finally {
-      setIsFetching(false);
-    }
-  }, []);
-
-  const handleChangeAutoReply = async () => {
-    const payload = { ...setting, auto_reply: !setting?.auto_reply };
-    try {
-      await SettingsApi.create(payload);
-      mutate(payload as Setting);
-      toast(
-        <span className="font-semibold text-teal-600">
-          Auto-reply is {!setting?.auto_reply ? 'enabled' : 'turned off'}
-        </span>
-      );
-    } catch (err: any) {
-      // console.error('Error fetching emails:', err.message);
-      toast(<span className="font-semibold text-red-600">{err.message}</span>);
-    }
-  };
 
   React.useEffect(() => {
     const fetchEmails = async () => {
@@ -175,15 +126,7 @@ export function Mail({
     <Tabs defaultValue="all">
       <div className="flex items-center px-4 py-2">
         <h1 className="text-xl font-bold mr-auto">Inbox</h1>
-        <div className="flex items-center space-x-2">
-          <Label htmlFor="airplane-mode">Auto-reply</Label>
-          <Switch
-            id="airplane-mode"
-            defaultChecked={setting?.auto_reply}
-            checked={setting?.auto_reply}
-            onClick={handleChangeAutoReply}
-          />
-        </div>
+        <AutoReply />
         <Separator orientation="vertical" className="h-5 ml-4" />
         <Tooltip>
           <TooltipTrigger>

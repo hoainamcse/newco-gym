@@ -22,7 +22,6 @@ export function MailList({ items }: MailListProps) {
       <div className="flex flex-col gap-2 p-4 pt-0">
         {!items.length && (
           <div className="font-medium text-sm flex gap-2 justify-center items-center">
-            {/* Please click <FolderSync className="w-4 h-4" /> button to sync email. */}
             No emails.
           </div>
         )}

@@ -242,7 +242,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
               </Avatar>
               <div className="grid gap-1">
                 <div className="font-semibold">{mail.sender}</div>
-                <div className="line-clamp-1 text-xs">{mail.subject}</div>
+                <div className="line-clamp-1 text-xs font-medium">{mail.subject}</div>
                 <div className="line-clamp-1 text-xs">
                   <span className="font-medium">Reply-To:</span> {mail.sender}
                 </div>
