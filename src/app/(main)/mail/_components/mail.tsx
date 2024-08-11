@@ -18,7 +18,7 @@ import {
   Users2,
 } from 'lucide-react';
 
-import { cn } from '@/lib/utils';
+import { cn, merge } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Separator } from '@/components/ui/separator';
@@ -68,6 +68,8 @@ interface MailProps {
   navCollapsedSize: number;
 }
 
+const now = Date.now();
+
 export function Mail({
   accounts,
   // mails,
@@ -87,8 +89,6 @@ export function Mail({
 
   const [isFetching, setIsFetching] = React.useState(false);
 
-  const [isError, setIsError] = React.useState(false);
-
   const { data: setting, mutate } = useSWR('SETTING', () =>
     SettingsApi.list().then((res) => res.data.setting[0])
   );
@@ -99,13 +99,24 @@ export function Mail({
     error,
     mutate: emailMutate,
     isValidating,
-  } = useSWR('LIST-EMAIL', () => GmailApi.getEmails().then((res) => res.data));
+  } = useSWR('LIST-EMAIL', () =>
+    GmailApi.getEmails().then((res) => res.data.map((i) => ({ ...i, read: true })) as Email[])
+  );
+
+  const {
+    data: polling,
+    error: pollingError,
+    mutate: pollingMutate,
+  } = useSWR(emails ? 'LIST-POLLING' : null, () =>
+    GmailApi.getPolling(Math.round(now / 1000)).then(
+      (res) => res.data.map((i) => ({ ...i, read: false })) as Email[]
+    )
+  );
 
   const router = useRouter();
 
   const handleGetEmails = React.useCallback(async () => {
     setIsFetching(true);
-    setIsError(false);
     try {
       const { data } = await GmailApi.getEmails();
       setMails(
@@ -119,7 +130,6 @@ export function Mail({
       );
     } catch (err: any) {
       console.error('Error fetching emails:', err.message);
-      setIsError(true);
       // toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setIsFetching(false);
@@ -142,12 +152,10 @@ export function Mail({
     }
   };
 
-  const now = Date.now();
-
   React.useEffect(() => {
     const fetchEmails = async () => {
-      if (isError) return;
-      await GmailApi.getPolling(Math.round(now / 1000));
+      if (pollingError) return;
+      pollingMutate(polling);
     };
 
     const intervalId = setInterval(() => {
@@ -157,7 +165,7 @@ export function Mail({
     }, 300000);
 
     return () => clearInterval(intervalId);
-  }, [isError, user?.last_history_id]);
+  }, [user?.last_history_id]);
 
   const handleRetry = () => {
     emailMutate();
@@ -245,18 +253,20 @@ export function Mail({
       {emails && (
         <>
           <TabsContent value="all" className="m-0">
-            <MailList items={emails} />
+            <MailList items={merge(polling ?? [], emails)} />
           </TabsContent>
           <TabsContent value="read" className="m-0">
-            <MailList items={emails.filter((item) => !item.pending)} />
+            <MailList items={merge(polling ?? [], emails).filter((item) => !item.pending)} />
           </TabsContent>
           <TabsContent value="unread" className="m-0">
-            <MailList items={emails.filter((item) => item.pending)} />
+            <MailList items={merge(polling ?? [], emails).filter((item) => item.pending)} />
           </TabsContent>
         </>
       )}
     </Tabs>
   );
+
+  console.log(polling);
 
   return (
     <>
@@ -272,13 +282,21 @@ export function Mail({
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={defaultLayout[2]}>
-            <MailDisplay mail={emails?.find((item) => item.id === mail.selected) || null} />
+            <MailDisplay
+              mail={
+                merge(polling ?? [], emails ?? []).find((item) => item.id === mail.selected) || null
+              }
+            />
           </ResizablePanel>
         </ResizablePanelGroup>
       ) : (
         <>
           {mail.selected ? (
-            <MailDisplay mail={emails?.find((item) => item.id === mail.selected) || null} />
+            <MailDisplay
+              mail={
+                merge(polling ?? [], emails ?? []).find((item) => item.id === mail.selected) || null
+              }
+            />
           ) : (
             renderMain()
           )}

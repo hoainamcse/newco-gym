@@ -27,7 +27,7 @@ const GmailApi = {
   },
 
   getPolling: async (timestamp: number, params: GmailQuery = {}) => {
-    const data = await axiosClient.get(`/v1/gmail/polling/${timestamp}`, { params });
+    const data = await axiosClient.get<ApiResponse<Email[]>>(`/v1/gmail/polling/${timestamp}`, { params });
     return data.data;
   },
 };

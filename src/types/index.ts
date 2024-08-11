@@ -12,6 +12,7 @@ export interface Email {
   created_at: string;
   updated_at: string;
 
+  read: boolean;
   name: string;
   labels: string[];
 }

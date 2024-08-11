@@ -8,9 +8,10 @@ import { Separator } from '@/components/ui/separator';
 import { Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import { FolderSync } from 'lucide-react';
+import type { Email } from '@/types';
 
 interface MailListProps {
-  items: Mail[];
+  items: Email[];
 }
 
 export function MailList({ items }: MailListProps) {
@@ -43,8 +44,9 @@ export function MailList({ items }: MailListProps) {
               <div className="flex items-center">
                 <div className="flex items-center gap-2">
                   {/* <div className="font-semibold">{item.name}</div> */}
-                  <div className="font-semibold">{item.sender}</div>
+                  <div className={cn(!item.read && 'font-semibold')}>{item.sender}</div>
                   {/* {!item.pending && <span className="flex h-2 w-2 rounded-full bg-blue-600" />} */}
+                  {!item.read && <span className="flex h-2 w-2 rounded-full bg-blue-600" />}
                 </div>
                 <div
                   className={cn(
@@ -57,7 +59,7 @@ export function MailList({ items }: MailListProps) {
                   })}
                 </div>
               </div>
-              <div className="text-xs font-medium">{item.subject}</div>
+              <div className={cn('text-xs', !item.read && 'font-semibold')}>{item.subject}</div>
             </div>
             <div className="line-clamp-2 text-xs text-muted-foreground">
               {item.content.substring(0, 300)}
