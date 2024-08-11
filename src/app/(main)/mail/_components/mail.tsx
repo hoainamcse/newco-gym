@@ -97,6 +97,8 @@ export function Mail({
     data: emails,
     isLoading,
     error,
+    mutate: emailMutate,
+    isValidating,
   } = useSWR('LIST-EMAIL', () => GmailApi.getEmails().then((res) => res.data));
 
   const router = useRouter();
@@ -140,27 +142,25 @@ export function Mail({
     }
   };
 
-  // React.useEffect(() => {
-  //   const fetchEmails = async () => {
-  //     if (isFetching || isError) return;
-  //     handleGetEmails();
-  //   };
+  const now = Date.now();
 
-  //   fetchEmails();
+  React.useEffect(() => {
+    const fetchEmails = async () => {
+      if (isError) return;
+      await GmailApi.getPolling(Math.round(now / 1000));
+    };
 
-  //   const intervalId = setInterval(() => {
-  //     if (user?.last_history_id) {
-  //       fetchEmails();
-  //     }
-  //   }, 20000);
+    const intervalId = setInterval(() => {
+      if (user?.last_history_id) {
+        fetchEmails();
+      }
+    }, 300000);
 
-  //   return () => clearInterval(intervalId);
-  // }, [isFetching, isError]);
+    return () => clearInterval(intervalId);
+  }, [isError, user?.last_history_id]);
 
   const handleRetry = () => {
-    setIsError(false); // Reset error state
-    setMails([]); // Clear any previous data
-    setIsFetching(false); // Allow fetching again
+    emailMutate();
   };
 
   const renderMain = () => (
@@ -220,21 +220,24 @@ export function Mail({
           </Alert>
         </div>
       )}
-      {isLoading && (
+      {(isLoading || isValidating) && (
         <>
           <Loader /> <Loader />
         </>
       )}
-      {!error && (
+      {error && (
         <div className="px-4 pb-4">
           <Alert variant="destructive">
             <Info className="h-4 w-4" />
             <AlertTitle>Error!</AlertTitle>
             <AlertDescription>
               Error fetching emails. Please{' '}
-              <Link href="/settings" className="underline underline-offset-4 font-medium">
+              <span
+                className="underline underline-offset-4 font-medium cursor-pointer"
+                onClick={handleRetry}
+              >
                 try again.
-              </Link>
+              </span>
             </AlertDescription>
           </Alert>
         </div>

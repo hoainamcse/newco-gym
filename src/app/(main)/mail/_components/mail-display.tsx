@@ -88,6 +88,12 @@ export function MailDisplay({ mail }: MailDisplayProps) {
     setMail({ selected: null });
   };
 
+  useEffect(() => {
+    if (mail) {
+      form.setValue('body', mail.response);
+    }
+  }, [mail, form]);
+
   return (
     <div className="flex h-full flex-col">
       {/* <div className="flex items-center p-2">
@@ -219,7 +225,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           {!isDesktop && (
             <div className="p-4 gap-4">
               <Button onClick={handleBackClick} variant="secondary" size="sm">
-                <ChevronLeft className='w-4 h-4 mr-2' /> Back
+                <ChevronLeft className="w-4 h-4 mr-2" /> Back
               </Button>
             </div>
           )}
@@ -252,52 +258,59 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           <div className="flex-1 whitespace-pre-wrap p-4 text-sm">{mail.content}</div>
           <Separator className="mt-auto" />
           <div className="p-4">
-            {mail.pending ? (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                  <div className="grid gap-4">
-                    <FormField
-                      control={form.control}
-                      name="body"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Textarea
-                              className="p-4 h-28"
-                              placeholder={`Reply ${mail.sender}...`}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className="flex items-center">
-                      {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="grid gap-4">
+                  <FormField
+                    control={form.control}
+                    name="body"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            className="p-4 h-32"
+                            placeholder={`Reply ${mail.sender}...`}
+                            readOnly={!mail.pending}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex items-center">
+                    {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
                       <Switch id="mute" aria-label="Mute thread" /> Mute this thread
                     </Label> */}
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        className="ml-auto"
-                        onClick={handleFillResponse}
+                    {!mail.pending ? (
+                      <Badge
+                        className={cn(
+                          getBadgeVariantFromLabel(mail.pending ? 'Cannot Reply' : 'Auto Replied')
+                        )}
                       >
-                        Fill response
-                      </Button>
-                      <Button type="submit" size="sm" className="ml-2">
-                        {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-                        Send
-                      </Button>
-                    </div>
+                        Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
+                      </Badge>
+                    ) : (
+                      <>
+                        {/* <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="ml-auto"
+                          onClick={handleFillResponse}
+                        >
+                          Fill response
+                        </Button> */}
+                        <Button type="submit" size="sm" className="ml-auto">
+                          {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                          Send
+                        </Button>
+                      </>
+                    )}
                   </div>
-                </form>
-              </Form>
-            ) : (
-              <Badge className={cn(getBadgeVariantFromLabel(mail.pending ? 'Cannot Reply' : 'Auto Replied'))}>
-                Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
-              </Badge>
-            )}
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       ) : (
