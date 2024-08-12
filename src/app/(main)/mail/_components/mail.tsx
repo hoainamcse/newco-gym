@@ -212,8 +212,6 @@ export function Mail({
     </Tabs>
   );
 
-  console.log(polling);
-
   return (
     <>
       {isDesktop ? (

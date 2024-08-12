@@ -28,7 +28,6 @@ export default function SignIn() {
         status,
         data: { user, access_token, refresh_token },
       } = JSON.parse(e.data);
-      console.log(user);
 
       if (status === 'success') {
         localStorage.setItem('user', JSON.stringify(user));
