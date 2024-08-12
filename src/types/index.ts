@@ -23,6 +23,6 @@ export interface Setting {
   created_at: string;
   updated_at: string;
   id: string;
-  google_drive_url: string;
+  google_drive_url: string | null;
   owner_id: string;
 }

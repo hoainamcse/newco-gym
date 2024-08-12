@@ -14,6 +14,8 @@ import { toast } from 'sonner';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { Setting } from '@/types';
 import Image from 'next/image';
+import useSWR from 'swr';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const pattern = /^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+(\?.*)?$/;
 
@@ -22,6 +24,12 @@ const formSchema = z.object({
 });
 
 export function ConnectDrive() {
+  const {
+    data: setting,
+    isLoading,
+    mutate,
+  } = useSWR('SETTING', () => SettingsApi.list().then((res) => res.data.setting[0]));
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -29,51 +37,49 @@ export function ConnectDrive() {
     },
   });
 
-  const [setting, setSetting] = useState<Setting | null>(null);
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
+    setIsValidating(true);
     try {
-      const { data } = await SettingsApi.create({ google_drive_url: values.google_drive_url });
-      setSetting(data.setting);
-      toast(<span className="font-semibold text-teal-600">Update successful</span>);
+      const payload = { ...setting, google_drive_url: values.google_drive_url };
+      await SettingsApi.create(payload);
+      mutate(payload as Setting);
+      toast(<span className="font-semibold text-teal-600">Add Google Drive link successful</span>);
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
-      setIsLoading(false);
+      setIsValidating(false);
     }
   };
 
   const handleDelete = async () => {
-    setIsLoading(true);
+    setIsValidating(true);
     try {
-      await SettingsApi.delete(setting?.id as string);
-      setSetting(null);
-      form.reset();
-      toast(<span className="font-semibold text-teal-600">Delete successful</span>);
+      const payload = { ...setting, google_drive_url: null };
+      await SettingsApi.create(payload);
+      mutate(payload as Setting);
+      toast(
+        <span className="font-semibold text-teal-600">Delete Google Drive link successful</span>
+      );
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
-      setIsLoading(false);
+      setIsValidating(false);
     }
   };
 
   useEffect(() => {
-    const loadSettings = async () => {
-      const { data } = await SettingsApi.list();
-      if (data.setting.length > 0) {
-        setSetting(data.setting[0]);
-        form.setValue('google_drive_url', data.setting[0].google_drive_url);
-      }
-    };
-    loadSettings();
-  }, [form]);
+    form.setValue('google_drive_url', setting?.google_drive_url || '');
+  }, [setting]);
+
+  if (isLoading) {
+    return <Skeleton className='w-[360px] h-[360px] place-self-center' />
+  }
 
   return (
-    <div className="w-fit min-w-[390px] place-self-center">
-      <div className="h-[390px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
+    <div className="w-fit min-w-[360px] place-self-center">
+      <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -95,7 +101,7 @@ export function ConnectDrive() {
                       <Input
                         placeholder="Insert the Google Drive's URL"
                         className="bg-white pr-8"
-                        disabled={!!setting}
+                        disabled={!!setting?.google_drive_url}
                         {...field}
                       />
                       <Link className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -105,9 +111,9 @@ export function ConnectDrive() {
                 </FormItem>
               )}
             />
-            {setting ? (
+            {setting?.google_drive_url ? (
               <Button variant="destructive" className="w-full" onClick={handleDelete} type="button">
-                {isLoading ? (
+                {isValidating ? (
                   <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   <Link2 className="h-4 w-4 mr-2" />
@@ -116,7 +122,7 @@ export function ConnectDrive() {
               </Button>
             ) : (
               <Button type="submit" className="bg-[#4CAF50] hover:bg-[#4CAF50] w-full">
-                {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                {isValidating && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
                 Import knowledge
               </Button>
             )}
