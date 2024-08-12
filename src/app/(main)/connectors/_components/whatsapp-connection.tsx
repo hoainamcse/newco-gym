@@ -32,7 +32,7 @@ export function WhatsappConnection() {
       toast(<span className="font-semibold text-teal-600">Update successful</span>);
       setIsPopoverOpen(true);
     } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setIsLoading(false);
     }
@@ -57,8 +57,8 @@ export function WhatsappConnection() {
   };
 
   return (
-    <div className="w-fit min-w-[390px] place-self-center">
-      <div className="h-[390px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
+    <div className="w-fit min-w-[360px] place-self-center">
+      <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
         <p className="font-medium mb-auto">WhatsApp Authorization</p>
         <Image
           width="80"
@@ -116,7 +116,7 @@ export function WhatsappConnection() {
           </div>
         )}
         <p className="text-sm font-medium mt-auto">
-          Authorize for WhatsApp Content Generation Chatbot
+          Authorize WhatsApp for Content Generation
         </p>
       </div>
     </div>

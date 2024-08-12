@@ -72,8 +72,8 @@ export function MailDisplay({ mail }: MailDisplayProps) {
       await GmailApi.replyEmail({ id: mail?.id, body: values.body });
       form.reset();
       toast(<span className="font-semibold text-teal-600">Update successful</span>);
-    } catch (error) {
-      toast(<span className="font-semibold text-red-600">Error happen</span>);
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
       setIsLoading(false);
     }
@@ -256,7 +256,10 @@ export function MailDisplay({ mail }: MailDisplayProps) {
             )}
           </div>
           <Separator />
-          <div className="flex-1 whitespace-pre-wrap p-4 text-sm">{mail.content}</div>
+          <div
+            className="flex-1 whitespace-pre-wrap p-4 text-sm"
+            dangerouslySetInnerHTML={{ __html: mail.content }}
+          />
           <Separator className="mt-auto" />
           <div className="p-4">
             <Form {...form}>

@@ -63,9 +63,10 @@ export function MailList({ items }: MailListProps) {
               </div>
               <div className={cn('text-xs', !item.read && 'font-semibold')}>{item.subject}</div>
             </div>
-            <div className="line-clamp-2 text-xs text-muted-foreground">
-              {item.content.substring(0, 300)}
-            </div>
+            <div
+              className="line-clamp-2 text-xs text-muted-foreground"
+              dangerouslySetInnerHTML={{ __html: item.content.substring(0, 300) }}
+            />
             {/* {item.labels.length ? (
               <div className="flex items-center gap-2">
                 {item.labels.map((label) => (
