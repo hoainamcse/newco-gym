@@ -9,7 +9,6 @@ import { Mail } from '@/app/(main)/mail/data';
 import { useMail } from '@/app/(main)/mail/user-mail';
 import { FolderSync } from 'lucide-react';
 import type { Email } from '@/types';
-import useMailFilter from '@/hooks/use-mail-filter';
 
 interface MailListProps {
   items: Email[];
@@ -17,8 +16,6 @@ interface MailListProps {
 
 export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
-
-  const { getLabels } = useMailFilter();
 
   return (
     <ScrollArea style={{ height: 'calc(100vh - 200px)' }}>
@@ -77,11 +74,9 @@ export function MailList({ items }: MailListProps) {
               </div>
             ) : null} */}
             <div className="flex items-center gap-2">
-              {getLabels(item).map((label) => (
-                <Badge key={label} className={cn(getBadgeVariantFromLabel(label))}>
-                  {label}
-                </Badge>
-              ))}
+              {item.status && (
+                <Badge className={cn(getBadgeVariantFromLabel(item.status))}>{item.status}</Badge>
+              )}
             </div>
           </button>
         ))}
@@ -99,5 +94,9 @@ function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['
     return 'bg-red-500';
   }
 
-  return 'secondary';
+  if (['high confidence'].includes(label.toLowerCase())) {
+    return 'bg-green-500';
+  }
+
+  return 'bg-yellow-500';
 }

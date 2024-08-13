@@ -9,11 +9,11 @@ export interface Email {
   confidence_score: number;
   response: string;
   user_id: string;
+  status: string | null;
   created_at: string;
   updated_at: string;
 
   read: boolean;
-  name: string;
   labels: string[];
 }
 
