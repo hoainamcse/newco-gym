@@ -69,12 +69,12 @@ const Navbar = (props: NavbarProps) => {
           >
             <Image
               alt="logo"
-              src={'https://placeholder.com/32x32'}
+              src='/foxmail-icon.png'
               width={32}
               height={32}
               className="rounded-full"
             />
-            <h1 className="font-medium text-2xl ml-2.5">GymSync</h1>
+            <h1 className="font-medium text-xl ml-2.5 text-white">NewCo Gym</h1>
           </button>
         </div>
         <div className="space-x-12 hidden md:flex md:justify-around md:items-center">

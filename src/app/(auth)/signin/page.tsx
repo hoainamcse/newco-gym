@@ -50,7 +50,7 @@ export default function SignIn() {
         <div className="w-full max-w-sm">
           <div className="flex justify-center mb-6">
             <Image
-              src={'https://placeholder.com/40x40'}
+              src='/foxmail-icon.png'
               width={40}
               height={40}
               alt="Logo"
