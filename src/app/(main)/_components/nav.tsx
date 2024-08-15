@@ -18,7 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from '@/context/App.context';
 import { cn } from '@/lib/utils';
 
@@ -33,7 +33,13 @@ function Nav() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     window.location.href = '/';
-  }
+  };
+
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -70,7 +76,7 @@ function Nav() {
           <Mails className="size-5" /> Email Automation
         </Link>
       </nav>
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
             <Menu className="h-5 w-5" />
@@ -79,7 +85,11 @@ function Nav() {
         </SheetTrigger>
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
-            <Link href="#" className="flex items-center gap-2 text-lg font-semibold">
+            <Link
+              href="#"
+              className="flex items-center gap-2 text-lg font-semibold"
+              onClick={handleClose}
+            >
               <Package2 className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
             </Link>
@@ -89,6 +99,7 @@ function Nav() {
                 pathname !== path[0] && 'text-muted-foreground',
                 'hover:text-foreground flex gap-2 items-center'
               )}
+              onClick={handleClose}
             >
               <Cable className="size-5" /> Connectors
             </Link>
@@ -98,6 +109,7 @@ function Nav() {
                 pathname !== path[1] && 'text-muted-foreground',
                 'hover:text-foreground flex gap-2 items-center'
               )}
+              onClick={handleClose}
             >
               <BookKey className="size-5" /> Knowledge Base
             </Link>
@@ -107,6 +119,7 @@ function Nav() {
                 pathname !== path[2] && 'text-muted-foreground',
                 'hover:text-foreground flex gap-2 items-center'
               )}
+              onClick={handleClose}
             >
               <Mails className="size-5" /> Email Automation
             </Link>
