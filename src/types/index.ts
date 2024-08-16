@@ -5,6 +5,7 @@ export interface Email {
   subject: string;
   date: string;
   content: string;
+  html_content: string | null;
   pending: boolean;
   confidence_score: number;
   response: string;

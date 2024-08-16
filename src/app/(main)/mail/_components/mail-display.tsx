@@ -37,6 +37,7 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useMail } from '../user-mail';
 import { useMediaQuery } from 'react-responsive';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 // import { Mail as Email } from '@/app/(main)/mail/data';
 
 interface MailDisplayProps {
@@ -253,10 +254,14 @@ export function MailDisplay({ mail }: MailDisplayProps) {
             )}
           </div>
           <Separator />
-          <div
-            className="flex-1 whitespace-pre-wrap p-4 text-sm"
-            dangerouslySetInnerHTML={{ __html: mail.content }}
-          />
+          <ScrollArea className='flex-1'>
+            <div
+              className="whitespace-pre-wrap p-4 text-sm"
+              style={{ maxHeight: 'calc(100dvh - 364px)' }}
+              dangerouslySetInnerHTML={{ __html: mail.html_content ?? mail.content }}
+            />
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
           <Separator className="mt-auto" />
           <div className="p-4">
             <Form {...form}>
