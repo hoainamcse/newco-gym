@@ -3,7 +3,7 @@
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Link, Link2 } from 'lucide-react';
+import { Link, RefreshCcw } from 'lucide-react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -53,22 +53,6 @@ export function ConnectDrive() {
     }
   };
 
-  const handleDelete = async () => {
-    setIsValidating(true);
-    try {
-      const payload = { ...setting, google_drive_url: null };
-      await SettingsApi.create(payload);
-      mutate(payload as Setting);
-      toast(
-        <span className="font-semibold text-teal-600">Delete Google Drive link successful</span>
-      );
-    } catch (err: any) {
-      toast(<span className="font-semibold text-red-600">{err.message}</span>);
-    } finally {
-      setIsValidating(false);
-    }
-  };
-
   useEffect(() => {
     form.setValue('google_drive_url', setting?.google_drive_url || '');
   }, [setting]);
@@ -101,7 +85,6 @@ export function ConnectDrive() {
                       <Input
                         placeholder="Insert the Google Drive's URL"
                         className="bg-white pr-8"
-                        disabled={!!setting?.google_drive_url}
                         {...field}
                       />
                       <Link className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -112,13 +95,13 @@ export function ConnectDrive() {
               )}
             />
             {setting?.google_drive_url ? (
-              <Button variant="destructive" className="w-full" onClick={handleDelete} type="button">
+              <Button variant="secondary" className="w-full" type="submit">
                 {isValidating ? (
                   <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Link2 className="h-4 w-4 mr-2" />
+                  <RefreshCcw className="h-4 w-4 mr-2" />
                 )}
-                Remove
+                Refresh
               </Button>
             ) : (
               <Button type="submit" className="bg-[#4CAF50] hover:bg-[#4CAF50] w-full">
