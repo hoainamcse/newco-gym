@@ -45,7 +45,7 @@ export function ConnectDrive() {
       const payload = { ...setting, google_drive_url: values.google_drive_url };
       await SettingsApi.create(payload);
       mutate(payload as Setting);
-      toast(<span className="font-semibold text-teal-600">Add Google Drive link successful</span>);
+      toast(<span className="font-semibold text-teal-600">Update Google Drive link successful</span>);
     } catch (err: any) {
       toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
@@ -95,7 +95,7 @@ export function ConnectDrive() {
               )}
             />
             {setting?.google_drive_url ? (
-              <Button variant="secondary" className="w-full" type="submit">
+              <Button type="submit" className="bg-[#4CAF50] hover:bg-[#4CAF50] w-full">
                 {isValidating ? (
                   <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                 ) : (

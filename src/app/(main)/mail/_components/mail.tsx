@@ -41,7 +41,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import useSWR from 'swr';
+import useSWRInfinite from "swr/infinite";
 import { AutoReply } from './auto-reply';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const Loader = () => {
   return (
@@ -81,15 +83,30 @@ export function Mail({
 
   const [mail] = useMail();
 
+  // const {
+  //   data: emails,
+  //   isLoading,
+  //   error,
+  //   mutate: emailMutate,
+  //   isValidating,
+  // } = useSWR('LIST-EMAIL', () =>
+  //   GmailApi.getEmails().then((res) => res.data.map((i) => ({ ...i, read: true })) as Email[])
+  // );
+
   const {
-    data: emails,
+    data,
     isLoading,
     error,
     mutate: emailMutate,
     isValidating,
-  } = useSWR('LIST-EMAIL', () =>
-    GmailApi.getEmails().then((res) => res.data.map((i) => ({ ...i, read: true })) as Email[])
+    size,
+    setSize,
+  } = useSWRInfinite(
+    (index) => `${index}`,
+    (index) => GmailApi.getEmails({ skip: 10 * Number(index) }).then((res) => res.data.map((i) => ({ ...i, read: true })) as Email[])
   );
+
+  const emails = data ? ([] as Email[]).concat(...data) : [];
 
   const {
     data: polling,
@@ -171,7 +188,7 @@ export function Mail({
           </Alert>
         </div>
       )}
-      {(isLoading || isValidating) && (
+      {isLoading && (
         <>
           <Loader /> <Loader />
         </>
@@ -196,13 +213,28 @@ export function Mail({
       {emails && (
         <>
           <TabsContent value="all" className="m-0">
-            <MailList items={merge(polling ?? [], emails)} />
+            <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
+              <MailList items={merge(polling ?? [], emails)} />
+              <div className='px-4'>
+                <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load mote'}</Button>
+              </div>
+            </ScrollArea>
           </TabsContent>
           <TabsContent value="read" className="m-0">
-            <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Auto Replied')} />
+            <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
+              <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Auto Replied')} />
+              <div className='px-4'>
+                <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load mote'}</Button>
+              </div>
+            </ScrollArea>
           </TabsContent>
           <TabsContent value="unread" className="m-0">
-            <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Cannot Reply')} />
+            <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
+              <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Cannot Reply')} />
+              <div className='px-4'>
+                <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load mote'}</Button>
+              </div>
+            </ScrollArea>
           </TabsContent>
         </>
       )}
