@@ -210,30 +210,36 @@ export function Mail({
           </Alert>
         </div>
       )}
-      {emails && (
+      {(emails && !isLoading) && (
         <>
           <TabsContent value="all" className="m-0">
             <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
               <MailList items={merge(polling ?? [], emails)} />
-              <div className='px-4'>
-                <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load mote'}</Button>
-              </div>
+              {!isLoading && (
+                <div className='px-4'>
+                  <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load more'}</Button>
+                </div>
+              )}
             </ScrollArea>
           </TabsContent>
           <TabsContent value="read" className="m-0">
             <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
               <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Auto Replied')} />
-              <div className='px-4'>
-                <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load mote'}</Button>
-              </div>
+              {!isLoading && (
+                <div className='px-4'>
+                  <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load more'}</Button>
+                </div>
+              )}
             </ScrollArea>
           </TabsContent>
           <TabsContent value="unread" className="m-0">
             <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
               <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Cannot Reply')} />
-              <div className='px-4'>
-                <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load mote'}</Button>
-              </div>
+              {!isLoading && (
+                <div className='px-4'>
+                  <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load more'}</Button>
+                </div>
+              )}
             </ScrollArea>
           </TabsContent>
         </>
