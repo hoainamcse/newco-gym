@@ -52,7 +52,7 @@ export function WhatsappConnection() {
   }, []);
 
   const copyToClipboard =async () => {
-    await navigator.clipboard.writeText('+1 (555) 025-2681');
+    await navigator.clipboard.writeText('+84 33 347 9771');
     alert("Phone number copied to clipboard!");
   };
 
@@ -102,7 +102,7 @@ export function WhatsappConnection() {
                   </div>
                   <div className="grid gap-2">
                     <Input
-                      defaultValue="+1 (555) 025-2681"
+                      defaultValue="+84 33 347 9771"
                       readOnly
                       className="col-span-2 h-8 text-center"
                     />
