@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Bot, Clipboard, Link2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -11,9 +11,30 @@ import AuthApi from '@/apis/auth';
 import { ReloadIcon } from '@radix-ui/react-icons';
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { AppContext } from '@/context/App.context';
+import { useSWRConfig } from 'swr';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+
+const formSchema = z.object({
+  phone_number: z.string().min(8, {
+    message: 'Phone number must be at least 8 characters.',
+  }),
+});
 
 export function WhatsappConnection() {
-  const [waUser, setWaUser] = useState(null);
+  const { user } = useContext(AppContext);
+
+  const { mutate } = useSWRConfig();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,15 +42,19 @@ export function WhatsappConnection() {
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const handleAuthorize = async () => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      phone_number: '',
+    },
+  });
+
+  const handleAuthorize = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const {
-        data: { user },
-      } = await AuthApi.connectWhatsapp({ phone_number: value });
-      localStorage.setItem('waUser', JSON.stringify(user));
-      setWaUser(user);
-      toast(<span className="font-semibold text-teal-600">Update successful</span>);
+      await AuthApi.connectWhatsapp({ phone_number: values.phone_number });
+      mutate('USER');
+      toast(<span className="font-semibold text-teal-600">Connect WhatsApp successful</span>);
       setIsPopoverOpen(true);
     } catch (err: any) {
       toast(<span className="font-semibold text-red-600">{err.message}</span>);
@@ -38,23 +63,27 @@ export function WhatsappConnection() {
     }
   };
 
-  const handleDisconnect = () => {
-    localStorage.removeItem('waUser');
-    window.location.reload();
+  const handleDisconnect = async () => {
+    setIsLoading(true);
+    try {
+      await AuthApi.disconnectWhatsapp();
+      mutate('USER');
+      toast(<span className="font-semibold text-teal-600">Disconnect WhatsApp successful</span>);
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText('+84 33 347 9771');
+    alert('Phone number copied to clipboard!');
   };
 
   useEffect(() => {
-    const item = localStorage.getItem('waUser');
-    if (item) {
-      setValue(JSON.parse(item).phone_number);
-      setWaUser(JSON.parse(item));
-    }
-  }, []);
-
-  const copyToClipboard =async () => {
-    await navigator.clipboard.writeText('+84 33 347 9771');
-    alert("Phone number copied to clipboard!");
-  };
+    form.setValue('phone_number', user?.phone_number[0] || '');
+  }, [user]);
 
   return (
     <div className="w-fit min-w-[360px] place-self-center">
@@ -66,24 +95,42 @@ export function WhatsappConnection() {
           src="https://img.icons8.com/color/480/whatsapp--v1.png"
           alt="whatsapp--v1"
         />
-        {!waUser ? (
-          <>
-            <PhoneInput
-              placeholder="Phone number"
-              className="bg-white rounded-none w-full"
-              value={value}
-              onChange={(event) => setValue(event as string)}
-              disabled={!!waUser}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleAuthorize)} className="space-y-8 w-full">
+            <FormField
+              control={form.control}
+              name="phone_number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <PhoneInput
+                      international
+                      className="bg-white rounded-none w-full"
+                      defaultCountry="VN"
+                      disabled={user.phone_number.length}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            <Button className="bg-[#40c351] hover:bg-[#40c351] w-full" onClick={handleAuthorize}>
-              {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-              Connect with WhatsApp
-            </Button>
-          </>
-        ) : (
+            {!user.phone_number.length && (
+              <Button className="bg-[#40c351] hover:bg-[#40c351] w-full" type="submit">
+                {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                Connect with WhatsApp
+              </Button>
+            )}
+          </form>
+        </Form>
+        {!!user.phone_number.length && (
           <div className="w-full flex gap-2">
             <Button variant="destructive" className="w-full" onClick={handleDisconnect}>
-              <Link2 className="h-4 w-4 mr-2" />
+              {isLoading ? (
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Link2 className="h-4 w-4 mr-2" />
+              )}
               Disconnect
             </Button>
             <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -115,9 +162,7 @@ export function WhatsappConnection() {
             </Popover>
           </div>
         )}
-        <p className="text-sm font-medium mt-auto">
-          Authorize WhatsApp for Content Generation
-        </p>
+        <p className="text-sm font-medium mt-auto">Authorize WhatsApp for Content Generation</p>
       </div>
     </div>
   );
