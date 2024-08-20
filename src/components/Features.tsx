@@ -41,10 +41,10 @@ const FeatureCard = ({ title, description }: FeatureCardProps) => (
 
 const Features = () => {
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6 md:p-12">
       <div className="text-center mt-12">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">Diverse Features</h1>
-        <p className="text-lg md:text-xl text-gray-400 mb-12">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Diverse Features</h1>
+        <p className="text-base md:text-lg text-gray-400 mb-12">
           Explore our diverse features tailored to meet the dynamic needs of modern businesses.
         </p>
       </div>

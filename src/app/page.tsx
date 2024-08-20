@@ -7,34 +7,37 @@ import Navbar from '@/components/Navbar';
 import Pricing from '@/components/Pricing';
 
 const navLinks = [
-  {
-    id: 'features',
-    title: 'Features',
-  },
-  {
-    id: 'pricing',
-    title: 'Pricing',
-  },
-  {
-    id: 'contact',
-    title: 'Contact',
-  },
+  { id: 'features', title: 'Features' },
+  { id: 'pricing', title: 'Pricing' },
+  { id: 'contact', title: 'Contact' },
 ];
 
 export default function Home() {
   return (
-    <main className="bg-gradient-bg h-screen overflow-auto scroll-snap-y no-scrollbar">
+    <main className="bg-gradient-bg min-h-screen overflow-auto scroll-snap-y no-scrollbar">
       <Navbar navLinks={navLinks} />
-      <section id="home" className="h-full flex items-center justify-center snap-start">
+      <section
+        id="home"
+        className="min-h-screen flex items-center justify-center snap-start py-16 px-4 md:py-24 md:px-8"
+      >
         <Introduction />
       </section>
-      <section id="features" className="h-full flex items-center justify-center snap-start">
+      <section
+        id="features"
+        className="min-h-screen flex items-center justify-center snap-start py-16 px-4 md:py-24 md:px-8"
+      >
         <Features />
       </section>
-      <section id="pricing" className="h-full flex items-center justify-center snap-start">
+      <section
+        id="pricing"
+        className="min-h-screen flex items-center justify-center snap-start py-16 px-4 md:py-24 md:px-8"
+      >
         <Pricing />
       </section>
-      <section id="contact" className="h-full flex items-center justify-center snap-start">
+      <section
+        id="contact"
+        className="min-h-screen flex items-center justify-center snap-start py-16 px-4 md:py-24 md:px-8"
+      >
         <Contact />
       </section>
     </main>
