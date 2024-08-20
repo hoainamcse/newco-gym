@@ -18,12 +18,9 @@ export function MailList({ items }: MailListProps) {
   const [mail, setMail] = useMail();
 
   return (
-    // <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
     <div className="flex flex-col gap-2 p-4 pt-0">
       {!items.length && (
-        <div className="font-medium text-sm flex gap-2 justify-center items-center">
-          No emails.
-        </div>
+        <div className="font-medium text-sm flex gap-2 justify-center items-center">No emails.</div>
       )}
       {items.map((item) => (
         <button
@@ -81,7 +78,6 @@ export function MailList({ items }: MailListProps) {
         </button>
       ))}
     </div>
-    // </ScrollArea>
   );
 }
 

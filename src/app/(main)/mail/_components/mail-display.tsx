@@ -93,223 +93,96 @@ export function MailDisplay({ mail }: MailDisplayProps) {
     }
   }, [mail, form]);
 
-  return (
-    <div className="flex h-full flex-col">
-      {/* <div className="flex items-center p-2">
-        <div className="flex items-center gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <Archive className="h-4 w-4" />
-                <span className="sr-only">Archive</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Archive</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <ArchiveX className="h-4 w-4" />
-                <span className="sr-only">Move to junk</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Move to junk</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <Trash2 className="h-4 w-4" />
-                <span className="sr-only">Move to trash</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Move to trash</TooltipContent>
-          </Tooltip>
-          <Separator orientation="vertical" className="mx-1 h-6" />
-          <Tooltip>
-            <Popover>
-              <PopoverTrigger asChild>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" disabled={!mail}>
-                    <Clock className="h-4 w-4" />
-                    <span className="sr-only">Snooze</span>
-                  </Button>
-                </TooltipTrigger>
-              </PopoverTrigger>
-              <PopoverContent className="flex w-[535px] p-0">
-                <div className="flex flex-col gap-2 border-r px-2 py-4">
-                  <div className="px-4 text-sm font-medium">Snooze until</div>
-                  <div className="grid min-w-[250px] gap-1">
-                    <Button variant="ghost" className="justify-start font-normal">
-                      Later today{' '}
-                      <span className="ml-auto text-muted-foreground">
-                        {format(addHours(today, 4), 'E, h:m b')}
-                      </span>
-                    </Button>
-                    <Button variant="ghost" className="justify-start font-normal">
-                      Tomorrow
-                      <span className="ml-auto text-muted-foreground">
-                        {format(addDays(today, 1), 'E, h:m b')}
-                      </span>
-                    </Button>
-                    <Button variant="ghost" className="justify-start font-normal">
-                      This weekend
-                      <span className="ml-auto text-muted-foreground">
-                        {format(nextSaturday(today), 'E, h:m b')}
-                      </span>
-                    </Button>
-                    <Button variant="ghost" className="justify-start font-normal">
-                      Next week
-                      <span className="ml-auto text-muted-foreground">
-                        {format(addDays(today, 7), 'E, h:m b')}
-                      </span>
-                    </Button>
-                  </div>
-                </div>
-                <div className="p-2">
-                  <Calendar />
-                </div>
-              </PopoverContent>
-            </Popover>
-            <TooltipContent>Snooze</TooltipContent>
-          </Tooltip>
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <Reply className="h-4 w-4" />
-                <span className="sr-only">Reply</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Reply</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <ReplyAll className="h-4 w-4" />
-                <span className="sr-only">Reply all</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Reply all</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <Forward className="h-4 w-4" />
-                <span className="sr-only">Forward</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Forward</TooltipContent>
-          </Tooltip>
-        </div>
-        <Separator orientation="vertical" className="mx-2 h-6" />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" disabled={!mail}>
-              <MoreVertical className="h-4 w-4" />
-              <span className="sr-only">More</span>
+  if (mail) {
+    return (
+      <div className="h-full flex flex-col">
+        {!isDesktop && (
+          <div className="p-4 gap-4">
+            <Button onClick={handleBackClick} variant="secondary" size="sm">
+              <ChevronLeft className="w-4 h-4 mr-2" /> Back
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Mark as unread</DropdownMenuItem>
-            <DropdownMenuItem>Star thread</DropdownMenuItem>
-            <DropdownMenuItem>Add label</DropdownMenuItem>
-            <DropdownMenuItem>Mute thread</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <Separator /> */}
-      {mail ? (
-        <div className="flex flex-1 flex-col">
-          {!isDesktop && (
-            <div className="p-4 gap-4">
-              <Button onClick={handleBackClick} variant="secondary" size="sm">
-                <ChevronLeft className="w-4 h-4 mr-2" /> Back
-              </Button>
+          </div>
+        )}
+        <div className="flex items-start p-4">
+          <div className="flex items-start gap-4 text-sm">
+            <Avatar>
+              <AvatarImage alt={mail.sender} />
+              <AvatarFallback>
+                {mail.sender
+                  .split(' ')
+                  .map((chunk) => chunk[0])
+                  .join('')}
+              </AvatarFallback>
+            </Avatar>
+            <div className="grid gap-1">
+              <div className="font-semibold">{mail.sender}</div>
+              <div className="line-clamp-1 text-xs font-medium">{mail.subject}</div>
+              <div className="line-clamp-1 text-xs">
+                <span className="font-medium">Reply-To:</span> {mail.sender}
+              </div>
+            </div>
+          </div>
+          {mail.date && (
+            <div className="ml-auto text-xs text-muted-foreground">
+              {format(new Date(mail.date), 'PPpp')}
             </div>
           )}
-          <div className="flex items-start p-4">
-            <div className="flex items-start gap-4 text-sm">
-              <Avatar>
-                <AvatarImage alt={mail.sender} />
-                <AvatarFallback>
-                  {mail.sender
-                    .split(' ')
-                    .map((chunk) => chunk[0])
-                    .join('')}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid gap-1">
-                <div className="font-semibold">{mail.sender}</div>
-                <div className="line-clamp-1 text-xs font-medium">{mail.subject}</div>
-                <div className="line-clamp-1 text-xs">
-                  <span className="font-medium">Reply-To:</span> {mail.sender}
-                </div>
-              </div>
-            </div>
-            {mail.date && (
-              <div className="ml-auto text-xs text-muted-foreground">
-                {format(new Date(mail.date), 'PPpp')}
-              </div>
-            )}
-          </div>
-          <Separator />
-          <ScrollArea className='flex-1'>
-            <div
-              className="whitespace-pre-wrap p-4 text-sm"
-              style={{ maxHeight: 'calc(100dvh - 364px)' }}
-              dangerouslySetInnerHTML={{ __html: mail.html_content ?? mail.content }}
-            />
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-          <Separator className="mt-auto" />
-          <div className="p-4">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <div className="grid gap-4">
-                  <FormField
-                    control={form.control}
-                    name="body"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Textarea
-                            className="p-4 h-32"
-                            placeholder={`Reply ${mail.sender}...`}
-                            readOnly={!mail.pending}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex items-center">
-                    {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
-                      <Switch id="mute" aria-label="Mute thread" /> Mute this thread
-                    </Label> */}
-                    {!['Cannot Reply', null].includes(mail.status) && (
-                      <Badge className={cn(getBadgeVariantFromLabel(mail.status as string))}>
-                        Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
-                      </Badge>
-                    )}
-                    {!['Auto Replied', null].includes(mail.status) && (
-                      <Button type="submit" size="sm" className="ml-auto">
-                        {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
-                        Send
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </form>
-            </Form>
-          </div>
         </div>
-      ) : (
-        <div className="p-8 text-center text-muted-foreground">No message selected</div>
-      )}
-    </div>
-  );
+        <Separator />
+        <ScrollArea className="flex-1 max-w-full">
+          <div
+            className="whitespace-pre-wrap p-4 text-sm"
+            dangerouslySetInnerHTML={{ __html: mail.html_content ?? mail.content }}
+          />
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+        <Separator />
+        <div className="p-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="body"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea
+                          className="p-4 h-32"
+                          placeholder={`Reply ${mail.sender}...`}
+                          readOnly={!mail.pending}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex items-center">
+                  {/* <Label htmlFor="mute" className="flex items-center gap-2 text-xs font-normal">
+                  <Switch id="mute" aria-label="Mute thread" /> Mute this thread
+                </Label> */}
+                  {!['Cannot Reply', null].includes(mail.status) && (
+                    <Badge className={cn(getBadgeVariantFromLabel(mail.status as string))}>
+                      Confidence score: {(mail.confidence_score * 100).toFixed(2)} %
+                    </Badge>
+                  )}
+                  {!['Auto Replied', null].includes(mail.status) && (
+                    <Button type="submit" size="sm" className="ml-auto">
+                      {isLoading && <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />}
+                      Send
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </form>
+          </Form>
+        </div>
+      </div>
+    );
+  }
+
+  return <div className="p-4 text-center text-muted-foreground">No message selected</div>;
 }
 
 function getBadgeVariantFromLabel(label: string): ComponentProps<typeof Badge>['className'] {

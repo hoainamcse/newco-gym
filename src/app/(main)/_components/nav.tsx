@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BookKey, Cable, Mails, Menu, Package2, PlugZap, Search } from 'lucide-react';
+import { BookKey, Cable, Mails, Menu, Package2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -15,15 +15,15 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useContext, useState } from 'react';
 import { AppContext } from '@/context/App.context';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 function Nav() {
-  const { user, setUser } = useContext(AppContext);
+  const { user } = useContext(AppContext);
   const pathname = usePathname();
   const router = useRouter();
   const path = ['/connectors', '/knowledge', '/mail'];
@@ -45,7 +45,13 @@ function Nav() {
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
         <Link href="#" className="flex items-center gap-2 text-lg font-semibold md:text-base">
-          <Package2 className="h-6 w-6" />
+          <Image
+            alt="logo"
+            src="/foxmail-icon.png"
+            width={24}
+            height={24}
+            className="rounded-full"
+          />
           <span className="sr-only">Acme Inc</span>
         </Link>
         <Link

@@ -41,7 +41,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import useSWR from 'swr';
-import useSWRInfinite from "swr/infinite";
+import useSWRInfinite from 'swr/infinite';
 import { AutoReply } from './auto-reply';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -55,43 +55,18 @@ const Loader = () => {
   );
 };
 interface MailProps {
-  accounts: {
-    label: string;
-    sender: string;
-    icon: React.ReactNode;
-  }[];
-  // mails: Mail[];
-  defaultLayout: number[] | undefined;
-  defaultCollapsed?: boolean;
-  navCollapsedSize: number;
+  defaultLayout: number[];
 }
 
 const now = Date.now();
 
-export function Mail({
-  accounts,
-  // mails,
-  defaultLayout = [20, 32, 48],
-  defaultCollapsed = false,
-  navCollapsedSize,
-}: MailProps) {
+export function Mail({ defaultLayout }: MailProps) {
+  console.log(defaultLayout);
   const { user } = React.useContext(AppContext);
 
   const isDesktop = useMediaQuery({ minWidth: 768 });
 
-  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-
   const [mail] = useMail();
-
-  // const {
-  //   data: emails,
-  //   isLoading,
-  //   error,
-  //   mutate: emailMutate,
-  //   isValidating,
-  // } = useSWR('LIST-EMAIL', () =>
-  //   GmailApi.getEmails().then((res) => res.data.map((i) => ({ ...i, read: true })) as Email[])
-  // );
 
   const {
     data,
@@ -103,7 +78,10 @@ export function Mail({
     setSize,
   } = useSWRInfinite(
     (index) => `${index}`,
-    (index) => GmailApi.getEmails({ skip: 10 * Number(index) }).then((res) => res.data.map((i) => ({ ...i, read: true })) as Email[])
+    (index) =>
+      GmailApi.getEmails({ skip: 10 * Number(index) }).then(
+        (res) => res.data.map((i) => ({ ...i, read: true })) as Email[]
+      )
   );
 
   const emails = data ? ([] as Email[]).concat(...data) : [];
@@ -140,7 +118,7 @@ export function Mail({
   };
 
   const renderMain = () => (
-    <Tabs defaultValue="all">
+    <>
       <div className="flex items-center px-4 py-2">
         <h1 className="text-xl font-bold mr-auto">Inbox</h1>
         <AutoReply />
@@ -162,125 +140,138 @@ export function Mail({
         </Tooltip>
       </div>
       <Separator />
-      <TabsList className="m-4">
-        <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
-          All
-        </TabsTrigger>
-        <TabsTrigger value="read" className="text-zinc-600 dark:text-zinc-200">
-          Auto Replied
-        </TabsTrigger>
-        <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
-          Cannot Reply
-        </TabsTrigger>
-      </TabsList>
-      {!user.last_history_id && (
-        <div className="px-4 pb-4">
-          <Alert variant="destructive">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Warning!</AlertTitle>
-            <AlertDescription>
-              You should{' '}
-              <Link href="/settings" className="underline underline-offset-4 font-medium">
-                enable watching
-              </Link>{' '}
-              to continue receiving upcoming emails.
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
-      {isLoading && (
-        <>
-          <Loader /> <Loader />
-        </>
-      )}
-      {error && (
-        <div className="px-4 pb-4">
-          <Alert variant="destructive">
-            <Info className="h-4 w-4" />
-            <AlertTitle>Error!</AlertTitle>
-            <AlertDescription>
-              Error fetching emails. Please{' '}
-              <span
-                className="underline underline-offset-4 font-medium cursor-pointer"
-                onClick={handleRetry}
-              >
-                try again.
-              </span>
-            </AlertDescription>
-          </Alert>
-        </div>
-      )}
-      {(emails && !isLoading) && (
-        <>
-          <TabsContent value="all" className="m-0">
-            <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
+      <Tabs defaultValue="all" style={{ height: 'calc(100% - 53px)' }} className="flex flex-col">
+        <TabsList className="grid grid-cols-3 m-4">
+          <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">
+            All
+          </TabsTrigger>
+          <TabsTrigger value="read" className="text-zinc-600 dark:text-zinc-200">
+            Auto Replied
+          </TabsTrigger>
+          <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">
+            Cannot Reply
+          </TabsTrigger>
+        </TabsList>
+        {!user.last_history_id && (
+          <div className="px-4 pb-4">
+            <Alert variant="destructive">
+              <Info className="h-4 w-4" />
+              <AlertTitle>Warning!</AlertTitle>
+              <AlertDescription>
+                You should{' '}
+                <Link href="/settings" className="underline underline-offset-4 font-medium">
+                  enable watching
+                </Link>{' '}
+                to continue receiving upcoming emails.
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+        {isLoading && (
+          <>
+            <Loader /> <Loader />
+          </>
+        )}
+        {error && (
+          <div className="px-4 pb-4">
+            <Alert variant="destructive">
+              <Info className="h-4 w-4" />
+              <AlertTitle>Error!</AlertTitle>
+              <AlertDescription>
+                Error fetching emails. Please{' '}
+                <span
+                  className="underline underline-offset-4 font-medium cursor-pointer"
+                  onClick={handleRetry}
+                >
+                  try again.
+                </span>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
+        {emails && !isLoading && (
+          <ScrollArea className="mb-4">
+            <TabsContent value="all" className="m-0">
               <MailList items={merge(polling ?? [], emails)} />
               {!isLoading && (
-                <div className='px-4'>
-                  <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load more'}</Button>
+                <div className="px-4">
+                  <Button
+                    onClick={() => setSize(size + 1)}
+                    size="sm"
+                    className="w-full"
+                    variant="secondary"
+                  >
+                    {isValidating ? 'Loading...' : 'Load more'}
+                  </Button>
                 </div>
               )}
-            </ScrollArea>
-          </TabsContent>
-          <TabsContent value="read" className="m-0">
-            <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
-              <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Auto Replied')} />
+            </TabsContent>
+            <TabsContent value="read" className="m-0">
+              <MailList
+                items={merge(polling ?? [], emails).filter(
+                  (item) => item.status === 'Auto Replied'
+                )}
+              />
               {!isLoading && (
-                <div className='px-4'>
-                  <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load more'}</Button>
+                <div className="px-4">
+                  <Button
+                    onClick={() => setSize(size + 1)}
+                    size="sm"
+                    className="w-full"
+                    variant="secondary"
+                  >
+                    {isValidating ? 'Loading...' : 'Load more'}
+                  </Button>
                 </div>
               )}
-            </ScrollArea>
-          </TabsContent>
-          <TabsContent value="unread" className="m-0">
-            <ScrollArea style={{ height: 'calc(100dvh - 200px)' }}>
-              <MailList items={merge(polling ?? [], emails).filter(item => item.status === 'Cannot Reply')} />
+            </TabsContent>
+            <TabsContent value="unread" className="m-0">
+              <MailList
+                items={merge(polling ?? [], emails).filter(
+                  (item) => item.status === 'Cannot Reply'
+                )}
+              />
               {!isLoading && (
-                <div className='px-4'>
-                  <Button onClick={() => setSize(size + 1)} size="sm" className="w-full" variant="secondary">{isValidating ? 'Loading...' : 'Load more'}</Button>
+                <div className="px-4">
+                  <Button
+                    onClick={() => setSize(size + 1)}
+                    size="sm"
+                    className="w-full"
+                    variant="secondary"
+                  >
+                    {isValidating ? 'Loading...' : 'Load more'}
+                  </Button>
                 </div>
               )}
-            </ScrollArea>
-          </TabsContent>
-        </>
-      )}
-    </Tabs>
-  );
-
-  return (
-    <>
-      {isDesktop ? (
-        <ResizablePanelGroup
-          direction="horizontal"
-          onLayout={(sizes: number[]) => {
-            document.cookie = `react-resizable-panels:layout:mail=${JSON.stringify(sizes)}`;
-          }}
-        >
-          <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-            {renderMain()}
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize={defaultLayout[2]}>
-            <MailDisplay
-              mail={
-                merge(polling ?? [], emails ?? []).find((item) => item.id === mail.selected) || null
-              }
-            />
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      ) : (
-        <>
-          {mail.selected ? (
-            <MailDisplay
-              mail={
-                merge(polling ?? [], emails ?? []).find((item) => item.id === mail.selected) || null
-              }
-            />
-          ) : (
-            renderMain()
-          )}
-        </>
-      )}
+            </TabsContent>
+          </ScrollArea>
+        )}
+      </Tabs>
     </>
   );
+
+  if (isDesktop) {
+    return (
+      <div className="h-full flex">
+        <div className="basis-1/3 border-r">{renderMain()}</div>
+        <div className="basis-2/3">
+          <MailDisplay
+            mail={
+              merge(polling ?? [], emails ?? []).find((item) => item.id === mail.selected) || null
+            }
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (mail.selected) {
+    return (
+      <MailDisplay
+        mail={merge(polling ?? [], emails ?? []).find((item) => item.id === mail.selected) || null}
+      />
+    );
+  }
+
+  return renderMain();
 }

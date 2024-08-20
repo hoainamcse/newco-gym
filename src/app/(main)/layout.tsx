@@ -22,7 +22,7 @@ function MainLayout({ children }: React.PropsWithChildren) {
 
   if (!user) {
     return (
-      <div className="h-screen flex justify-center items-center">
+      <div className="h-screen max-h-screen flex justify-center items-center">
         <Button asChild>
           <Link href="/signin">Login to access</Link>
         </Button>
@@ -31,9 +31,9 @@ function MainLayout({ children }: React.PropsWithChildren) {
   }
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen">
       <Nav />
-      <main className="flex-1 overflow-auto flex flex-col gap-4 md:gap-8">{children}</main>
+      <main style={{ height: 'calc(100dvh - 64px)' }}>{children}</main>
       <Toaster />
     </div>
   );

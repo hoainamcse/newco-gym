@@ -10,11 +10,19 @@ interface GmailQuery {
 }
 
 const GmailApi = {
-  startWatching: () => HTTPService.sendRequestWithToken('POST', '/v1/gmail/start-watching'),
-  stopWatching: () => HTTPService.sendRequestWithToken('POST', '/v1/gmail/stop-watching'),
   sendEmail: (params: any) =>
     HTTPService.sendRequestWithToken('POST', '/v1/gmail/send-email', {}, params),
   pendingEmail: () => HTTPService.sendRequestWithToken('GET', '/v1/gmail/pending'),
+
+  startWatching: async () => {
+    const data = await axiosClient.post('/v1/gmail/start-watching');
+    return data.data;
+  },
+
+  stopWatching: async () => {
+    const data = await axiosClient.post('/v1/gmail/stop-watching');
+    return data.data;
+  },
 
   replyEmail: async (payload = {}) => {
     const data = await axiosClient.post('/v1/gmail/reply-email', payload);
