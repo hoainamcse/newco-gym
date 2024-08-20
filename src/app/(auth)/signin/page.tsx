@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { FaGoogle } from 'react-icons/fa';
 import AuthApi from '@/apis/auth';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -12,39 +12,36 @@ export default function SignIn() {
   const router = useRouter();
 
   const handleSignIn = async () => {
-    const {
-      data: { url },
-    } = await AuthApi.signIn();
-    const windowFeatures = 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no';
-    window.open(url, '_blank', windowFeatures);
+    const { data }= await AuthApi.signIn();
+    // const windowFeatures = 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no';
+    // window.open(url, '_blank', windowFeatures);
+    router.push(data.url);
   };
 
-  useEffect(() => {
-    const handleAuthMessage = (e: MessageEvent) => {
-      if (e.origin !== window.location.origin) {
-        // Ignore messages from other origins
-        return;
-      }
+  // useEffect(() => {
+  //   const handleAuthMessage = (e: MessageEvent) => {
+  //     if (e.origin !== window.location.origin) {
+  //       return;
+  //     }
 
-      const {
-        status,
-        data: { user, access_token, refresh_token },
-      } = JSON.parse(e.data);
+  //     const {
+  //       status,
+  //       data: { access_token, refresh_token },
+  //     } = JSON.parse(e.data);
 
-      if (status === 'success') {
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('access_token', access_token);
-        localStorage.setItem('refresh_token', refresh_token);
-        window.location.href = '/connectors';
-      }
-    };
+  //     if (status === 'success') {
+  //       localStorage.setItem('access_token', access_token);
+  //       localStorage.setItem('refresh_token', refresh_token);
+  //       window.location.href = '/connectors';
+  //     }
+  //   };
 
-    window.addEventListener('message', handleAuthMessage);
+  //   window.addEventListener('message', handleAuthMessage);
 
-    return () => {
-      window.removeEventListener('message', handleAuthMessage);
-    };
-  }, [router]);
+  //   return () => {
+  //     window.removeEventListener('message', handleAuthMessage);
+  //   };
+  // }, [router]);
 
   return (
     <div className="flex h-screen">

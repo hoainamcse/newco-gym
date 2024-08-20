@@ -29,7 +29,6 @@ function Nav() {
   const path = ['/connectors', '/knowledge', '/mail'];
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     window.location.href = '/';
