@@ -1,11 +1,10 @@
 'use client';
 
 import AuthApi from '@/apis/auth';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function OAuthCallback() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -23,12 +22,12 @@ export default function OAuthCallback() {
         if (status === 'success') {
           localStorage.setItem('access_token', data.access_token);
           localStorage.setItem('refresh_token', data.refresh_token);
-          router.push('/connectors');
+          window.location.href = '/connectors';
         }
       }
     };
     run();
-  }, [router, searchParams]);
+  }, [searchParams]);
 
   return <div>Authenticating...</div>;
 }

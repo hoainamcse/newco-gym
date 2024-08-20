@@ -7,15 +7,20 @@ import AuthApi from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function SignIn() {
   const router = useRouter();
 
   const handleSignIn = async () => {
-    const { data }= await AuthApi.signIn();
-    // const windowFeatures = 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no';
-    // window.open(url, '_blank', windowFeatures);
-    router.push(data.url);
+    try {
+      const { data } = await AuthApi.signIn();
+      // const windowFeatures = 'width=600,height=600,menubar=no,toolbar=no,location=no,status=no';
+      // window.open(url, '_blank', windowFeatures);
+      router.push(data.url);
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
+    }
   };
 
   // useEffect(() => {
