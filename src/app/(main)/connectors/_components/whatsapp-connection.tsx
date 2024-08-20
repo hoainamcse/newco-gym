@@ -106,7 +106,7 @@ export function WhatsappConnection() {
                     <PhoneInput
                       international
                       className="bg-white rounded-none w-full"
-                      defaultCountry="VN"
+                      defaultCountry="SG"
                       disabled={user.phone_number.length}
                       {...field}
                     />
