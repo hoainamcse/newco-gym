@@ -61,7 +61,6 @@ interface MailProps {
 const now = Date.now();
 
 export function Mail({ defaultLayout }: MailProps) {
-  console.log(defaultLayout);
   const { user } = React.useContext(AppContext);
 
   const isDesktop = useMediaQuery({ minWidth: 768 });

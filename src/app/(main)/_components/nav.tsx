@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BookKey, Cable, Mails, Menu, Package2 } from 'lucide-react';
+import { BookKey, Cable, Mails, Menu } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -95,7 +95,13 @@ function Nav() {
               className="flex items-center gap-2 text-lg font-semibold"
               onClick={handleClose}
             >
-              <Package2 className="h-6 w-6" />
+              <Image
+                alt="logo"
+                src="/foxmail-icon.png"
+                width={24}
+                height={24}
+                className="rounded-full"
+              />
               <span className="sr-only">Acme Inc</span>
             </Link>
             <Link
