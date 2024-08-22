@@ -2,17 +2,18 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { toast } from 'sonner';
 import { Link2 } from 'lucide-react';
 
 import AuthApi from '@/apis/auth';
 import { useRouter } from 'next/navigation';
+import { AppContext } from '@/context/App.context';
 
 export function FacebookConnection() {
-  const router = useRouter();
+  const { user } = useContext(AppContext);
 
-  const [fbUser, setFbUser] = useState(null);
+  const router = useRouter();
 
   const handleAuthorize = async () => {
     try {
@@ -26,7 +27,6 @@ export function FacebookConnection() {
   };1
 
   const handleDisconnect = () => {
-    localStorage.removeItem('fbUser');
     window.location.reload();
   };
 
@@ -42,8 +42,6 @@ export function FacebookConnection() {
   //     } = JSON.parse(e.data);
 
   //     if (status === 'success') {
-  //       localStorage.setItem('fbUser', JSON.stringify(user));
-  //       setFbUser(user);
   //       toast(<span className="font-semibold text-teal-600">Update successful</span>);
   //     }
   //   };
@@ -55,13 +53,6 @@ export function FacebookConnection() {
   //   };
   // }, []);
 
-  useEffect(() => {
-    const item = localStorage.getItem('fbUser');
-    if (item) {
-      setFbUser(JSON.parse(item));
-    }
-  }, []);
-
   return (
     <div className="w-fit min-w-[360px] place-self-center">
       <div className="h-[360px] border border-dashed bg-gray-50 border-gray-400 flex flex-col justify-center items-center gap-6 p-6 rounded-md">
@@ -72,12 +63,12 @@ export function FacebookConnection() {
           src="https://img.icons8.com/color/480/facebook-new.png"
           alt="facebook-new"
         />
-        {!fbUser ? (
+        {!user.connected_facebook ? (
           <Button className="bg-[#039be5] hover:bg-[#039be5] w-full" onClick={handleAuthorize}>
             Connect with Facebook
           </Button>
         ) : (
-          <Button variant="destructive" className="w-full" onClick={handleDisconnect}>
+          <Button variant="destructive" className="w-full" onClick={handleDisconnect} disabled>
             <Link2 className="h-4 w-4 mr-2" />
             Disconnect
           </Button>
