@@ -58,7 +58,7 @@ interface MailProps {
   defaultLayout: number[];
 }
 
-const now = Date.now();
+const now = Date.now() + 300000;
 
 export function Mail({ defaultLayout }: MailProps) {
   const { user } = React.useContext(AppContext);
