@@ -40,7 +40,7 @@ import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import useSWRInfinite from 'swr/infinite';
 import { AutoReply } from './auto-reply';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -66,6 +66,8 @@ export function Mail({ defaultLayout }: MailProps) {
   const isDesktop = useMediaQuery({ minWidth: 768 });
 
   const [mail] = useMail();
+
+  const { mutate: globalMutate } = useSWRConfig();
 
   const {
     data,
@@ -111,6 +113,16 @@ export function Mail({ defaultLayout }: MailProps) {
 
     return () => clearInterval(intervalId);
   }, [user?.last_history_id]);
+
+  React.useEffect(() => {
+    const startWatching = async () => {
+      await GmailApi.startWatching();
+      globalMutate('USER');
+    }
+    if (user?.last_history_id) {
+      startWatching();
+    }
+  }, []);
 
   const handleRetry = () => {
     emailMutate();
