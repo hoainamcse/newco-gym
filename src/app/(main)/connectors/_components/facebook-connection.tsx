@@ -2,16 +2,21 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { toast } from 'sonner';
 import { Link2 } from 'lucide-react';
 
 import AuthApi from '@/apis/auth';
 import { useRouter } from 'next/navigation';
 import { AppContext } from '@/context/App.context';
+import { useSWRConfig } from 'swr';
 
 export function FacebookConnection() {
   const { user } = useContext(AppContext);
+
+  const { mutate } = useSWRConfig();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -24,10 +29,20 @@ export function FacebookConnection() {
     } catch (err: any) {
       toast(<span className="font-semibold text-red-600">{err.message}</span>);
     }
-  };1
+  };
+  1;
 
-  const handleDisconnect = () => {
-    window.location.reload();
+  const handleDisconnect = async () => {
+    setIsLoading(true);
+    try {
+      await AuthApi.disconnectFacebook();
+      mutate('USER');
+      toast(<span className="font-semibold text-teal-600">Disconnect WhatsApp successful</span>);
+    } catch (err: any) {
+      toast(<span className="font-semibold text-red-600">{err.message}</span>);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // useEffect(() => {
@@ -68,7 +83,7 @@ export function FacebookConnection() {
             Connect with Facebook
           </Button>
         ) : (
-          <Button variant="destructive" className="w-full" onClick={handleDisconnect} disabled>
+          <Button variant="destructive" className="w-full" onClick={handleDisconnect}>
             <Link2 className="h-4 w-4 mr-2" />
             Disconnect
           </Button>
