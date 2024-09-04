@@ -37,7 +37,7 @@ export function FacebookConnection() {
     try {
       await AuthApi.disconnectFacebook();
       mutate('USER');
-      toast(<span className="font-semibold text-teal-600">Disconnect WhatsApp successful</span>);
+      toast(<span className="font-semibold text-teal-600">Disconnect Facebook successful</span>);
     } catch (err: any) {
       toast(<span className="font-semibold text-red-600">{err.message}</span>);
     } finally {
